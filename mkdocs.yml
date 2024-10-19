@@ -1,0 +1,61 @@
+site_name: "The D3LT4 Protocol"
+site_description: "Guías de hacking ético y tutoriales de ciberseguridad"
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: cyan
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: es
+  icon:
+    logo: material/security
+
+nav:
+  - Inicio: index.md
+  - Máquinas Vulnerables:
+    - maquinas-vulnerables/index.md
+    - DockerLabs:
+      - maquinas-vulnerables/dockerlabs/amor.md
+  - Tutoriales:
+    - tutoriales/index.md
+    - Docker:
+      - tutoriales/Docker/primeros-pasos-docker.md
+      - tutoriales/Docker/instalacion-portainer.md
+    - Herramientas de Hacking:
+      - tutoriales/herramientas-hacking/herramienta1.md
+      - tutoriales/herramientas-hacking/herramienta2.md
+  - Recursos:
+    - recursos/glosario.md
+    - recursos/enlaces-utiles.md
+    - recursos/bibliografia.md
+  - Acerca de: about.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+copyright: |
+  &copy; 2024 <a href="https://github.com/Delta-39"  target="_blank" rel="noopener">D3LT4</a>
