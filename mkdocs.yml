@@ -25,15 +25,15 @@ nav:
   - Máquinas Vulnerables:
     - maquinas-vulnerables/index.md
     - DockerLabs:
-      - maquinas-vulnerables/dockerlabs/amor.md
+      - maquinas-vulnerables/dockerlabs/injection.md
   - Tutoriales:
     - tutoriales/index.md
     - Docker:
       - tutoriales/Docker/primeros-pasos-docker.md
       - tutoriales/Docker/instalacion-portainer.md
     - Herramientas de Hacking:
-      - tutoriales/herramientas-hacking/herramienta1.md
-      - tutoriales/herramientas-hacking/herramienta2.md
+      - tutoriales/herramientas-hacking/nmap.md
+      - tutoriales/herramientas-hacking/.md
   - Recursos:
     - recursos/glosario.md
     - recursos/enlaces-utiles.md
