@@ -31,7 +31,7 @@ Explicación del comando
 - **`-T4`**: Establece la velocidad del escaneo a "agresiva".
 - **`172.17.0.2`**: Dirección IP del objetivo a escanear
 
-![Escaneo nmap](/assets/firsthacking/nmapScan.png)
+![Escaneo nmap](../../assets/firsthacking/nmapScan.png)
 
 El escaneo revela un exploit de un backdoor con privilegios de root.
 
@@ -42,7 +42,7 @@ Utilizamos Metasploit Framework para buscar módulos relacionados con vsFTPd, pr
 ```bash
 msfconsole
 ```
-![Emsf1](/assets/firsthacking/msf1.png)
+![Emsf1](../../assets/firsthacking/msf1.png)
 
 El siguiente paso es buscar un exploit relacionado con la vulnerabilidad que habiamos encontrado, para eso usaremos el siguiente comando:
 
@@ -50,7 +50,7 @@ El siguiente paso es buscar un exploit relacionado con la vulnerabilidad que hab
 search vsftpd
 ```
 
-![msf2](/assets/firsthacking/msf2.png)
+![msf2](../../assets/firsthacking/msf2.png)
 
 Obtenemos dos resultados, uno para hacer un DDoS y otro para ejecutar un backdoor. En esta oprtunidad usaremos el backdoor debido a que el objetivo de esta MV es obtener privilegios de **`root`**. Para usar este exploit usaremos el siguiente comando:
 
@@ -66,13 +66,13 @@ set RHOSTS 172.17.0.2
 
 Finalmente ejecutamos el modulo con el comando **`exploit`**
 
-![msf3](/assets/firsthacking/msf3.png)
+![msf3](../../assets/firsthacking/msf3.png)
 
 ## 5. Escalada de privilegios
 
 Como pudimos ver en la anterior imagen, al ejecutarse correctamente el exploit ya seriamos el usuario **`root`**. Al ejecutar el comando **`whoami`**, nos devuelve **`root`**
 
-![msf4](/assets/firsthacking/msf4.png)
+![msf4](../../assets/firsthacking/msf4.png)
 
 ## 6. Captura de Bandera
 
