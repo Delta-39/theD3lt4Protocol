@@ -1,0 +1,1116 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Guías de hacking ético y tutoriales de ciberseguridad">
+      
+      
+      
+      
+        <link rel="prev" href="../nmap/">
+      
+      
+        <link rel="next" href="../../../about/">
+      
+      
+      <link rel="icon" href="/docs/assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+    
+    
+      
+        <title>Wireshark - The D3LT4 Protocol</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#wireshark" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-header__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12h7c-.53 4.11-3.28 7.78-7 8.92zH5V6.3l7-3.11M12 1 3 5v6c0 5.55 3.84 10.73 9 12 5.16-1.27 9-6.45 9-12V5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The D3LT4 Protocol
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Wireshark
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../maquinas-vulnerables/" class="md-tabs__link">
+          
+  
+  Máquinas Vulnerables
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  Tutoriales
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../about/" class="md-tabs__link">
+        
+  
+    
+  
+  Acerca de
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-nav__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12h7c-.53 4.11-3.28 7.78-7 8.92zH5V6.3l7-3.11M12 1 3 5v6c0 5.55 3.84 10.73 9 12 5.16-1.27 9-6.45 9-12V5z"/></svg>
+
+    </a>
+    The D3LT4 Protocol
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inicio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas Vulnerables
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    DockerLabs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            DockerLabs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/injection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Injection 💉
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/firsthacking/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FirstHacking 🕵️‍♀️
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Tutoriales
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tutoriales
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutoriales
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Docker
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Docker
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/primeros-pasos-docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Primeros pasos con Docker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/instalacion-portainer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Instalación de Portainer en un Servidor Ubuntu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Herramientas de Hacking
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Herramientas de Hacking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../nmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nmap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Wireshark
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Wireshark
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-de-wireshark" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación de Wireshark
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interfaz-y-funciones-basicas-de-wireshark" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interfaz y Funciones Básicas de Wireshark
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Interfaz y Funciones Básicas de Wireshark">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-captura-de-trafico-de-red" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Captura de Tráfico de Red
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-filtrado-de-paquetes" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Filtrado de Paquetes
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-decodificacion-de-protocolos" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Decodificación de Protocolos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-exportacion-de-capturas" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Exportación de Capturas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comandos-y-filtros-utiles-en-wireshark" class="md-nav__link">
+    <span class="md-ellipsis">
+      Comandos y Filtros Útiles en Wireshark
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analisis-de-trafico-en-tiempo-real" class="md-nav__link">
+    <span class="md-ellipsis">
+      Análisis de Tráfico en Tiempo Real
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Análisis de Tráfico en Tiempo Real">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-inspeccionar-sesiones-http-y-ftp" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Inspeccionar Sesiones HTTP y FTP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-deteccion-de-credenciales-no-cifradas" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Detección de Credenciales no Cifradas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-analisis-de-redes-inalambricas" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Análisis de Redes Inalámbricas
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#casos-practicos-en-hacking-etico" class="md-nav__link">
+    <span class="md-ellipsis">
+      Casos Prácticos en Hacking Ético
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Casos Prácticos en Hacking Ético">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-captura-de-credenciales-en-http" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Captura de Credenciales en HTTP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-analisis-de-ataques-de-man-in-the-middle-mitm" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Análisis de Ataques de Man-in-the-Middle (MitM)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-identificacion-de-escaneos-de-red" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Identificación de Escaneos de Red
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exportacion-y-generacion-de-informes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exportación y Generación de Informes
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Acerca de
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="wireshark">Wireshark</h1>
+<p><strong>Wireshark</strong> es una herramienta de análisis de tráfico de red ampliamente utilizada en ciberseguridad y administración de redes. Es capaz de capturar y analizar paquetes de datos en tiempo real, lo que permite inspeccionar lo que está ocurriendo en una red a nivel de detalle. Es utilizada por profesionales de redes, hackers éticos y analistas de seguridad para solucionar problemas, detectar vulnerabilidades y monitorear la actividad de la red.</p>
+<hr />
+<h2 id="instalacion-de-wireshark">Instalación de Wireshark</h2>
+<p>Wireshark está disponible para varios sistemas operativos. Aquí te dejo los comandos para instalarlo en diferentes plataformas:</p>
+<ul>
+<li><strong>En Linux (Debian/Ubuntu):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>wireshark
+</code></pre></div><blockquote>
+<p>Durante la instalación, se te preguntará si los usuarios no root deben poder capturar paquetes. Elige Sí si quieres habilitar esta opción.</p>
+</blockquote>
+</li>
+<li><strong>En macOS (usando Homebrew)::</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>brew<span class="w"> </span>install<span class="w"> </span>wireshark
+</code></pre></div></li>
+<li><strong>En Windows:</strong> Puedes descargar el instalador desde <a href="https://www.wireshark.org/download.html">aca</a> y seguir las instrucciones del instalador.</li>
+</ul>
+<hr />
+<h2 id="interfaz-y-funciones-basicas-de-wireshark">Interfaz y Funciones Básicas de Wireshark</h2>
+<p>Cuando abres Wireshark, te vas a encontrar con una lista de interfaces de red que podess seleccionar para capturar tráfico. A continuación, describimos las funciones clave:</p>
+<h3 id="1-captura-de-trafico-de-red">1. Captura de Tráfico de Red</h3>
+<p>Una vez seleccionada una interfaz, simplemente presiona el botón Start (Iniciar) para comenzar a capturar el tráfico en tiempo real.</p>
+<h3 id="2-filtrado-de-paquetes">2. Filtrado de Paquetes</h3>
+<p>Los filtros en Wireshark son esenciales para reducir la cantidad de datos que ves y enfocarte en lo que necesitas analizar. Existen dos tipos de filtros:</p>
+<p><strong>Filtros de Captura</strong>: Se aplican antes de comenzar la captura, limitando los paquetes que Wireshark almacenará.</p>
+<p><strong>Filtros de Visualización</strong>: Filtran los paquetes ya capturados para mostrar solo los que te interesan.</p>
+<p>Ejemplos de filtros comunes:</p>
+<ul>
+<li><strong>Mostrar solo tráfico HTTP:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>http
+</code></pre></div></li>
+<li><strong>Filtrar paquetes por dirección IP:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>ip.addr<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">192</span>.168.1.1
+</code></pre></div></li>
+<li><strong>Mostrar solo tráfico TCP o UDP en el puerto 80:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>tcp.port<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">80</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>udp.port<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">80</span>
+</code></pre></div></li>
+</ul>
+<h3 id="3-decodificacion-de-protocolos">3. Decodificación de Protocolos</h3>
+<p>Wireshark puede interpretar y decodificar una gran cantidad de protocolos, como HTTP, DNS, FTP, SSL/TLS, entre otros. Puedes analizar los detalles de cada paquete capturado haciendo clic en el mismo, lo que mostrará información como:</p>
+<ul>
+<li>Dirección IP de origen y destino.</li>
+<li>Puerto de origen y destino.</li>
+<li>Protocolo usado (TCP, UDP, etc.).</li>
+<li>Datos de la capa de aplicación.</li>
+</ul>
+<h3 id="4-exportacion-de-capturas">4. Exportación de Capturas</h3>
+<p>Es posible guardar tus capturas de tráfico para analizarlas más tarde o compartirlas con otros:</p>
+<p>Ve a File &gt; Export Packet Dissections &gt; As CSV para exportar los datos en un formato de hoja de cálculo.
+También puedes guardar el archivo en formato PCAP (formato de captura de paquetes estándar) para abrirlo luego.</p>
+<hr />
+<h2 id="comandos-y-filtros-utiles-en-wireshark">Comandos y Filtros Útiles en Wireshark</h2>
+<p>Wireshark ofrece una amplia gama de filtros que te permiten analizar redes con precisión. Estos son algunos de los más comunes:</p>
+<ul>
+<li><strong>Capturar tráfico de un puerto específico:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>tcp.port<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">443</span>
+</code></pre></div></li>
+<li><strong>Filtrar por protocolo (por ejemplo, DNS):</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>dns
+</code></pre></div></li>
+<li><strong>Filtrar tráfico proveniente de una dirección IP específica</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ip.src<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">10</span>.0.0.1
+</code></pre></div></li>
+<li><strong>Mostrar solo paquetes que contengan errores:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>tcp.analysis.flags
+</code></pre></div></li>
+</ul>
+<hr />
+<h2 id="analisis-de-trafico-en-tiempo-real">Análisis de Tráfico en Tiempo Real</h2>
+<h3 id="1-inspeccionar-sesiones-http-y-ftp">1. Inspeccionar Sesiones HTTP y FTP</h3>
+<p>Puedes capturar y analizar sesiones HTTP para ver cómo un cliente y un servidor interactúan. Wireshark te permite ver las solicitudes y respuestas HTTP con todos sus encabezados y contenido.</p>
+<h3 id="2-deteccion-de-credenciales-no-cifradas">2. Detección de Credenciales no Cifradas</h3>
+<p>Una de las funciones clave en el hacking ético es la captura de credenciales en redes no seguras. Si capturas tráfico en un entorno donde se usa FTP (sin cifrar) o HTTP, podrías ver las credenciales de inicio de sesión en texto plano. Por ejemplo, usando el filtro:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ftp.request.command<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;USER&quot;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>ftp.request.command<span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">&quot;PASS&quot;</span>
+</code></pre></div>
+<h3 id="3-analisis-de-redes-inalambricas">3. Análisis de Redes Inalámbricas</h3>
+<p>Combinando Wireshark con herramientas como <em><code>Aircrack-ng</code></em>, podes capturar tráfico en redes inalámbricas y analizar los paquetes para detectar problemas o realizar auditorías de seguridad.</p>
+<hr />
+<h2 id="casos-practicos-en-hacking-etico">Casos Prácticos en Hacking Ético</h2>
+<h3 id="1-captura-de-credenciales-en-http">1. Captura de Credenciales en HTTP</h3>
+<p>Un caso típico de análisis con Wireshark es capturar tráfico en redes inseguras para detectar credenciales que viajan en texto plano. Capturando paquetes HTTP, puedes inspeccionar las solicitudes de inicio de sesión y extraer datos confidenciales.</p>
+<h3 id="2-analisis-de-ataques-de-man-in-the-middle-mitm">2. Análisis de Ataques de Man-in-the-Middle (MitM)</h3>
+<p>Wireshark es útil para detectar ataques de Man-in-the-Middle. Si sospechas de que un ataque MitM está ocurriendo, puedes monitorear el tráfico y buscar señales de duplicación de tráfico o paquetes maliciosos inyectados.</p>
+<h3 id="3-identificacion-de-escaneos-de-red">3. Identificación de Escaneos de Red</h3>
+<p>Wireshark también es útil para identificar intentos de escaneo de red con herramientas como Nmap. Un patrón de tráfico inusual en una red, como muchos paquetes enviados a múltiples puertos en sucesión, puede indicar un escaneo en curso.</p>
+<hr />
+<h2 id="exportacion-y-generacion-de-informes">Exportación y Generación de Informes</h2>
+<p>Wireshark permite guardar las capturas y generar informes detallados sobre el tráfico capturado. Para guardar una captura:</p>
+<ul>
+<li>Ve a File &gt; Save As y elige el formato PCAP o PCAPNG.</li>
+</ul>
+<p>También podes exportar los resultados como archivos CSV, JSON, o XML, lo que es útil para compartir los datos con otros analistas o para importar los resultados a otras herramientas.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2024 <a href="https://github.com/Delta-39"  target="_blank" rel="noopener">D3LT4</a>
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>
