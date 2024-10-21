@@ -19,6 +19,8 @@ theme:
   language: es
   icon:
     logo: material/security
+  extra:
+  favicon: '/assets/favicon.png'
 
 nav:
   - Inicio: index.md
@@ -26,6 +28,7 @@ nav:
     - maquinas-vulnerables/index.md
     - DockerLabs:
       - maquinas-vulnerables/dockerlabs/injection.md
+      - maquinas-vulnerables/dockerlabs/firsthacking.md
   - Tutoriales:
     - tutoriales/index.md
     - Docker:
@@ -33,11 +36,11 @@ nav:
       - tutoriales/Docker/instalacion-portainer.md
     - Herramientas de Hacking:
       - tutoriales/herramientas-hacking/nmap.md
-      - tutoriales/herramientas-hacking/.md
-  - Recursos:
-    - recursos/glosario.md
-    - recursos/enlaces-utiles.md
-    - recursos/bibliografia.md
+      - tutoriales/herramientas-hacking/wireshark.md
+  # - Recursos:
+  #   - recursos/glosario.md
+  #   - recursos/enlaces-utiles.md
+  #   - recursos/bibliografia.md
   - Acerca de: about.md
 
 markdown_extensions:
