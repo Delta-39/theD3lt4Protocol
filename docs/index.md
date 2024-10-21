@@ -10,7 +10,7 @@ En este blog, me enfoco en:
 
 - **Tutoriales de Ciberseguridad**: Aprende desde conceptos básicos hasta técnicas avanzadas. Desde la configuración de entornos seguros hasta ataques y defensas, aquí encontrarás información que te ayudará a crecer como profesional de la seguridad.
 
-- **Recursos**: Herramientas, scripts, y documentación útil para cualquier entusiasta de la ciberseguridad. Este es el espacio donde compartimos aquellos recursos que consideramos valiosos para facilitar tu aprendizaje y práctica.
+<!-- - **Recursos**:  Herramientas, scripts, y documentación útil para cualquier entusiasta de la ciberseguridad. Este es el espacio donde compartimos aquellos recursos que consideramos valiosos para facilitar tu aprendizaje y práctica. -->
 
 ## Mi Misión
 
