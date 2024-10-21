@@ -878,17 +878,17 @@ Al intentar ingresar por navegador a dicha direccion, no nos carga nada por lo q
 <li><strong><code>-T4</code></strong>: Establece la velocidad del escaneo a "agresiva".</li>
 <li><strong><code>172.17.0.2</code></strong>: Dirección IP del objetivo a escanear</li>
 </ul>
-<p><img alt="Escaneo nmap" src="/assets/firsthacking/nmapScan.png" /></p>
+<p><img alt="Escaneo nmap" src="assets/firsthacking/nmapScan.png" /></p>
 <p>El escaneo revela un exploit de un backdoor con privilegios de root.</p>
 <h2 id="4-explotacion">4. Explotación</h2>
 <p>Utilizamos Metasploit Framework para buscar módulos relacionados con vsFTPd, primero iniciaremos esta herramienta.</p>
 <p><div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>msfconsole
 </code></pre></div>
-<img alt="Emsf1" src="/assets/firsthacking/msf1.png" /></p>
+<img alt="Emsf1" src="assets/firsthacking/msf1.png" /></p>
 <p>El siguiente paso es buscar un exploit relacionado con la vulnerabilidad que habiamos encontrado, para eso usaremos el siguiente comando:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>search<span class="w"> </span>vsftpd
 </code></pre></div>
-<p><img alt="msf2" src="/assets/firsthacking/msf2.png" /></p>
+<p><img alt="msf2" src="assets/firsthacking/msf2.png" /></p>
 <p>Obtenemos dos resultados, uno para hacer un DDoS y otro para ejecutar un backdoor. En esta oprtunidad usaremos el backdoor debido a que el objetivo de esta MV es obtener privilegios de <strong><code>root</code></strong>. Para usar este exploit usaremos el siguiente comando:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>use<span class="w"> </span>exploit/unix/ftp/vsftpd_234_backdoor
 </code></pre></div>
@@ -896,10 +896,10 @@ Al intentar ingresar por navegador a dicha direccion, no nos carga nada por lo q
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">set</span><span class="w"> </span>RHOSTS<span class="w"> </span><span class="m">172</span>.17.0.2
 </code></pre></div>
 <p>Finalmente ejecutamos el modulo con el comando <strong><code>exploit</code></strong></p>
-<p><img alt="msf3" src="/assets/firsthacking/msf3.png" /></p>
+<p><img alt="msf3" src="assets/firsthacking/msf3.png" /></p>
 <h2 id="5-escalada-de-privilegios">5. Escalada de privilegios</h2>
 <p>Como pudimos ver en la anterior imagen, al ejecutarse correctamente el exploit ya seriamos el usuario <strong><code>root</code></strong>. Al ejecutar el comando <strong><code>whoami</code></strong>, nos devuelve <strong><code>root</code></strong></p>
-<p><img alt="msf4" src="/assets/firsthacking/msf4.png" /></p>
+<p><img alt="msf4" src="assets/firsthacking/msf4.png" /></p>
 <h2 id="6-captura-de-bandera">6. Captura de Bandera</h2>
 <p>Esta Maquina Vulnerable no cuenta con captura de bandera.</p>
 <h2 id="7-lecciones-aprendidas">7. Lecciones Aprendidas</h2>
