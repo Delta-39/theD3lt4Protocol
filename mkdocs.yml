@@ -37,9 +37,9 @@ nav:
     - Herramientas de Hacking:
       - tutoriales/herramientas-hacking/nmap.md
       - tutoriales/herramientas-hacking/wireshark.md
-  # - Recursos:
+  - Recursos:
+    - recursos/enlaces-utiles.md
   #   - recursos/glosario.md
-  #   - recursos/enlaces-utiles.md
   #   - recursos/bibliografia.md
   - Acerca de: about.md
 
