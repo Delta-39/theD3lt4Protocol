@@ -14,12 +14,17 @@ En esta sección encontrarás enlaces a recursos útiles para mejorar tus habili
 - [SecLists](https://github.com/danielmiessler/SecLists) - Colección de listas útiles para pentesting, como diccionarios y listas de passwords.
 - [Exploit Database](https://www.exploit-db.com/) - Base de datos de exploits y vulnerabilidades.
 - [The Art of Hacking](https://github.com/The-Art-of-Hacking/h4cker) - Coleccion de recursos, creado por Omar Santos.
+- [Conocimientos Obsidian](https://github.com/Maalfer/Conocimiento_Obsidian) - Coleccion de varios recursos, incluido programacion,docker,hacking, redes,etc
 
 ## Comunidades y Foros
 
 - [Reddit - NetSec](https://www.reddit.com/r/netsec/) - Comunidad de noticias y discusión sobre ciberseguridad.
 - [Null Byte](https://null-byte.wonderhowto.com/) - Guías y tutoriales sobre hacking ético y ciberseguridad.
 - [Ciberseguridad en Español](https://ciberseguridad.es/) - Comunidad en español dedicada a la seguridad informática.
+
+## Red Team
+- [Rev Shell Generator](https://www.revshells.com/) - 
+- [GTFOBins](https://gtfobins.github.io/)
 
 ## Blue Team
 
