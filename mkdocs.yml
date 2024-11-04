@@ -27,8 +27,11 @@ nav:
   - Máquinas Vulnerables:
     - maquinas-vulnerables/index.md
     - DockerLabs:
-      - maquinas-vulnerables/dockerlabs/injection.md
-      - maquinas-vulnerables/dockerlabs/firsthacking.md
+      - Muy Facìl:
+        - maquinas-vulnerables/dockerlabs/muyFacil/injection.md
+        - maquinas-vulnerables/dockerlabs/muyFacil/firsthacking.md
+      - Facil:
+        - maquinas-vulnerables/dockerlabs/facil/amor.md
   - Tutoriales:
     - tutoriales/index.md
     - Docker:

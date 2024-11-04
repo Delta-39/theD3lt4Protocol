@@ -10,7 +10,7 @@
 
 El primer paso es acceder a la máquina virtual a través de la interfaz web proporcionada por DockerLabs. La dirección IP de la máquina objetivo es 172.17.0.2.
 
-![Página de inicio de sesión](../../assets/injection/paginaweb1.png)
+![Página de inicio de sesión](../../../assets/injection/paginaweb1.png)
 
 ## 3. Enumeración
 
@@ -28,7 +28,7 @@ Explicación del comando
 - **`-Pn`**:  Omite la detección de hosts, asumiendo que están activos.
 - **`172.17.0.2`**: Dirección IP del objetivo a escanear
 
-![Escaneo nmap](../../assets/injection/nmap.png)
+![Escaneo nmap](../../../assets/injection/nmap.png)
 
 El resultado muestra que los puertos 22 (SSH) y 80 (HTTP) están abiertos.
 
@@ -36,13 +36,13 @@ El resultado muestra que los puertos 22 (SSH) y 80 (HTTP) están abiertos.
 
 La página de inicio muestra un formulario de login. Basándonos en el nombre de la máquina ("Injection"), probamos una inyección SQL simple en el campo de usuario.
 
-![Inyeccion SQL](../../assets/injection/paginawebinjection.png)
+![Inyeccion SQL](../../../assets/injection/paginawebinjection.png)
 
 > El campo de contrseña se puede dejar vacio o colocarle lo que sea.
 
 Después de bypassear el login, nos encontramos con un mensaje de bienvenida que muestra la contraseña insertada. Esto sugiere que la aplicación es vulnerable a la inyección SQL y que podemos extraer información adicional de la base de datos.
 
-![Bypass login](../../assets/injection/paginawebpostinjection.png)
+![Bypass login](../../../assets/injection/paginawebpostinjection.png)
 
 > Recordemos que el escaneo hecho con nmap, nos habia mostrado que tenia el puerto 22 (SSH) abierto, sera dylan un usuario?
 
@@ -73,7 +73,7 @@ find / -perm -4000 2>/dev/null
 
 Nos devolvera varios archivos, de los cuales el que mas me llamo la atencion fue el env. Buscamos el esploit para este archivo en searchbins y, nos damos cuenta que podemos ejecutar la shell como root a partir de ahi 
 
-![Esploit](../../assets/injection/escaladapriv.png)
+![Esploit](../../../assets/injection/escaladapriv.png)
 
 ```bash
 /usr/bin/env /bin/sh -p
