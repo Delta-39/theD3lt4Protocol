@@ -1,0 +1,1383 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Guías de hacking ético y tutoriales de ciberseguridad">
+      
+      
+      
+      
+        <link rel="prev" href="../primeros-pasos-pfsense/">
+      
+      
+        <link rel="next" href="../../Docker/primeros-pasos-docker/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+    
+    
+      
+        <title>Configuración de OpenVPN en pfSense 📡🔑 - The D3LT4 Protocol</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.0253249f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuracion-de-openvpn-en-pfsense" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-header__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12h7c-.53 4.11-3.28 7.78-7 8.92zH5V6.3l7-3.11M12 1 3 5v6c0 5.55 3.84 10.73 9 12 5.16-1.27 9-6.45 9-12V5z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The D3LT4 Protocol
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuración de OpenVPN en pfSense 📡🔑
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../maquinas-vulnerables/" class="md-tabs__link">
+          
+  
+  Máquinas Vulnerables
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  Tutoriales
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../recursos/enlaces-utiles/" class="md-tabs__link">
+          
+  
+  Recursos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../about/" class="md-tabs__link">
+        
+  
+    
+  
+  Acerca de
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-nav__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 12h7c-.53 4.11-3.28 7.78-7 8.92zH5V6.3l7-3.11M12 1 3 5v6c0 5.55 3.84 10.73 9 12 5.16-1.27 9-6.45 9-12V5z"/></svg>
+
+    </a>
+    The D3LT4 Protocol
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Inicio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas Vulnerables
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    DockerLabs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            DockerLabs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Muy Fácil
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Muy Fácil
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/injection/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Injection 💉
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/firsthacking/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FirstHacking 🕵️‍♀️
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Fácil
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fácil
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/amor/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Amor ❤️
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Tutoriales
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tutoriales
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tutoriales
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    pfSense
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            pfSense
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../primeros-pasos-pfsense/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Primeros pasos con pfSense 🧱
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Configuración de OpenVPN en pfSense 📡🔑
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Configuración de OpenVPN en pfSense 📡🔑
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#crear-una-autoridad-certificadora-ca" class="md-nav__link">
+    <span class="md-ellipsis">
+      Crear una Autoridad Certificadora (CA)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#crear-un-certificado-de-servidor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Crear un Certificado de Servidor
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#crear-certificado-de-cliente" class="md-nav__link">
+    <span class="md-ellipsis">
+      Crear Certificado de Cliente
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configurar-el-servidor-openvpn" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configurar el Servidor OpenVPN
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bonustrack-exportar-la-configuracion-del-cliente-openvpn" class="md-nav__link">
+    <span class="md-ellipsis">
+      BONUSTRACK: Exportar la Configuración del Cliente OpenVPN
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#probar-la-conexion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Probar la Conexión
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Docker
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Docker
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/primeros-pasos-docker/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Primeros pasos con Docker
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/instalacion-portainer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Instalación de Portainer en un Servidor Ubuntu
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Herramientas de Hacking
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            Herramientas de Hacking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../herramientas-hacking/nmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Nmap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../herramientas-hacking/wireshark/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wireshark
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Recursos
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Recursos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recursos/enlaces-utiles/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Enlaces Útiles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Acerca de
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="configuracion-de-openvpn-en-pfsense">Configuración de OpenVPN en pfSense 📡🔑</h1>
+<p>Este tutorial te voy a guiar paso a paso como dejar listo un servidor openVpn, y crear los certificados para que los clientes se puedan conectar</p>
+<h2 id="crear-una-autoridad-certificadora-ca">Crear una Autoridad Certificadora (CA)</h2>
+<p>Lo primero que tenemos que crear es la autoridad certificadora, basicamente esta autoridad es la entidad que va a verificar los certificados entre la concexion vpn, generando confianza entre ambos.</p>
+<ol>
+<li>
+<p>Accede a la interfaz web de pfSense:  </p>
+<ul>
+<li>Ingresa a <code>http://&lt;IP_de_pfSense&gt;</code> en tu navegador.</li>
+<li>Inicia sesión con tus credenciales de administrador.</li>
+</ul>
+</li>
+<li>
+<p>Dirígete a <strong>System &gt; Cert. Manager &gt; CAs</strong>.</p>
+</li>
+<li>
+<p>Haz clic en <strong>Add</strong> para crear una nueva CA. Configura los siguientes campos:</p>
+<ul>
+<li>Create /Edit CA<ul>
+<li><strong>Descriptive Name</strong>: ponemos un nombre descriptivo a esta CA, el que nosotros queramos.</li>
+<li><strong>Method</strong>: Create an internal Certificate Authority.</li>
+</ul>
+</li>
+<li>Internal Certificate Authority<ul>
+<li><strong>Key type:</strong> ECDSA con secp521r1 que es compatible con OpenVPN.</li>
+<li><strong>Digest Algorithm:</strong> sha512</li>
+<li><strong>Lifetime Days:</strong> 3650 (10 años)</li>
+<li><strong>Common-name:</strong> el CN debe ser un nombre descriptivo, que describa inequívocamente a esta CA. En nuestro caso solamente tenemos una CA para OpenVPN, así que hemos puesto simplemente «openvpn-ca»</li>
+<li><strong>Country Code:</strong> none. Esto ya no es necesario rellenarlo en los nuevos certificados de OpenVPN.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>En cuanto al porque la eleccion de la criptografia, <strong>ECDSA (Elliptic Curve Digital Signature Algorithm)</strong> es preferido sobre RSA porque proporciona una seguridad equivalente con claves significativamente más pequeñas, lo que reduce el consumo de recursos y mejora el rendimiento, especialmente en dispositivos con menos capacidad. Por ejemplo, una clave ECDSA de 521 bits ofrece una seguridad comparable a una clave RSA de 15,360 bits. Además, las curvas elípticas como secp521r1 son reconocidas por su robustez criptográfica contra ataques basados en factorización o logaritmos discretos.</p>
+<p>El uso de <strong>SHA-512</strong> como algoritmo de hash garantiza una alta resistencia frente a colisiones (situaciones donde dos entradas diferentes producen el mismo hash), gracias a su salida de 512 bits. Esto añade un nivel adicional de integridad y seguridad al proceso de firma. Combinando estos elementos, se logra una configuración moderna, eficiente y altamente segura, ideal para proteger conexiones VPN .</p>
+<p><img alt="openVpn-CA" src="../../../assets/pfsense/openvpn-CA.png" /></p>
+<p>Haz clic en <strong>Save</strong> para guardar la CA.</p>
+<h2 id="crear-un-certificado-de-servidor">Crear un Certificado de Servidor</h2>
+<p>Ahora tenemos que crear el certificado del servidor, esto es para crear la <strong>"identidad digital"</strong> del servidor, la misma autentica al servidor ante los clientes. </p>
+<ol>
+<li>Ve a <strong>System &gt; Cert. Manager &gt; Certificates</strong>.</li>
+</ol>
+<p>Vas a ver que ya hay un certificado creado, este corresponde al certificado ssl para que la pagina web funcione sobre https.</p>
+<blockquote>
+<p>¿Por que aparece que la pagina no es segura? === Porque el certificado esta autofirmado.</p>
+</blockquote>
+<ol>
+<li>Haz clic en <strong>Add</strong> y selecciona los siguientes parámetros:<ul>
+<li>Create /Edit CA<ul>
+<li><strong>Descriptive Name</strong>: ponemos un nombre descriptivo.</li>
+<li><strong>Method</strong>: Create an internal Certificate.</li>
+</ul>
+</li>
+<li>Internal Certificate<ul>
+<li><strong>Key type:</strong> ECDSA con secp521r1 que es compatible con OpenVPN.</li>
+<li><strong>Digest Algorithm:</strong> sha512</li>
+<li><strong>Lifetime Days:</strong> 3650 (10 años)</li>
+<li><strong>Common-name:</strong> el CN debe ser un nombre descriptivo</li>
+<li><strong>Country Code:</strong> none. Esto ya no es necesario rellenarlo en los nuevos certificados de OpenVPN.</li>
+</ul>
+</li>
+<li>Certificate Attributes:<ul>
+<li><strong>Certificate Type:</strong> server certificate</li>
+<li><strong>Alternative Name:</strong> lo podemos dejar sin nada, completamente vacío.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><img alt="openVpn-cs1" src="../../../assets/pfsense/openVpn-CS1.png" />
+<img alt="openVpn-cs2" src="../../../assets/pfsense/openVpn-CS2.png" /></p>
+<p>Haz clic en <strong>Save</strong> para crear el certificado.</p>
+<h2 id="crear-certificado-de-cliente">Crear Certificado de Cliente</h2>
+<p>Ahora vamos a crear el certificado de cliente, este certificado vas a tener que crearlo, cada vez que quieras habilitar una conexion vpn nueva.</p>
+<ol>
+<li>
+<p>Ve a <strong>System &gt; Cert. Manager &gt; Certificates</strong>.</p>
+</li>
+<li>
+<p>Haz clic en <strong>Add</strong> y selecciona los siguientes parámetros:</p>
+<ul>
+<li>Create /Edit CA<ul>
+<li><strong>Descriptive Name</strong>: ponemos un nombre descriptivo.</li>
+<li><strong>Method</strong>: Create an internal Certificate.</li>
+</ul>
+</li>
+<li>Internal Certificate<ul>
+<li><strong>Key type:</strong> ECDSA con secp521r1 que es compatible con OpenVPN.</li>
+<li><strong>Digest Algorithm:</strong> sha512</li>
+<li><strong>Lifetime Days:</strong> 3650 (10 años)</li>
+<li><strong>Common-name:</strong> el CN debe ser un nombre descriptivo</li>
+<li><strong>Country Code:</strong> none. Esto ya no es necesario rellenarlo en los nuevos certificados de OpenVPN.</li>
+</ul>
+</li>
+<li>Certificate Attributes:<ul>
+<li><strong>Certificate Type:</strong> user certificate</li>
+<li><strong>Alternative Name:</strong> lo podemos dejar sin nada, completamente vacío.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p><img alt="openVpn-cs1" src="../../../assets/pfsense/openvpn-user1.png" />
+<img alt="openVpn-cs2" src="../../../assets/pfsense/openvpn-user2.png" /></p>
+<p>Haz clic en <strong>Save</strong> para crear el certificado.</p>
+<h2 id="configurar-el-servidor-openvpn">Configurar el Servidor OpenVPN</h2>
+<ol>
+<li>
+<p>Dirígete a <strong>VPN &gt; OpenVPN &gt; Servers</strong> y haz clic en <strong>Add</strong> para agregar un nuevo servidor OpenVPN.</p>
+</li>
+<li>
+<p>Configura los campos principales como sigue:</p>
+<ul>
+<li>General Information<ul>
+<li><strong>Description:</strong> Descripcion acorde a la vpn.</li>
+</ul>
+</li>
+<li>Mode Configuration:<ul>
+<li><strong>Mode Access:</strong> Remote access (SSL/TLS)</li>
+<li><strong>Device Mode:</strong> tun</li>
+</ul>
+</li>
+<li>Enpoint Configuration:<ul>
+<li><strong>Protocol</strong>: UDP (elegi esta opcion para evitar ataques de DDoS).</li>
+<li><strong>Port:</strong> 1194 (para metodos didacticos dejamos el puerto por defecto, pero se recomienda cambiarlo)</li>
+<li><strong>Interface:</strong> WAN
+Cryptographic Settings:</li>
+<li><strong>Server certificate:</strong>Aca colocaremos el certificado de serrvidor que creamos anteriormente</li>
+<li><strong>DH Parameter Length:</strong> Colocar solo curvas ECDH</li>
+<li><strong>ECDH Curve:</strong> Yo deje la misma curva que habiamos colocado anteriormente, para moayor seguridad.</li>
+<li><strong>Data Encryption Algorithms:</strong> Ya por defecto vienen seleccionados los 3 algoritmos que me parecieron los mas fuertes</li>
+<li><strong>Fallback Data Encryption Algorithm:</strong> Yo deje como fallback AES-256-CBC, igualmente recomiendo dejar AES-256-GCM, si hay dispositovos que no soporten este algoritmo la mejor practica seria actualizarlos.</li>
+<li><strong>Auth digest algorithm:</strong> SHA-512</li>
+<li><strong>Certificate Depth:</strong> Colocar ONE(Client + Server)
+<img alt="openVpn-server1" src="../../../assets/pfsense/pfsense-server1.png" />
+<img alt="openVpn-server2" src="../../../assets/pfsense/pfsense-server2.png" />
+<img alt="openVpn-server3" src="../../../assets/pfsense/pfsense-server3.png" /></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>Dentro de estas configuraciones podremos tambien limitar a que redes se podra conectar nuestro servidor vpn para asi poder limitar el acceso a nuestra red <code>IPv4 Local network(s)</code>, asi como tambien la cantidad de conexiones activas al mismo tiempo en  <code>Concurrent connections</code>.</p>
+<p><img alt="openVpn-server4" src="../../../assets/pfsense/pfsense-server4.png" /></p>
+<p>Finalmente seleccionaremos como toplogia <code>subnet</code>, siendo esta mas efectiva que <code>net30</code></p>
+<p>Haz clic en <strong>Save</strong> y luego en <strong>Apply Changes</strong>.</p>
+<h2 id="bonustrack-exportar-la-configuracion-del-cliente-openvpn">BONUSTRACK: Exportar la Configuración del Cliente OpenVPN</h2>
+<ol>
+<li>Instala el paquete <strong>OpenVPN Client Export Utility</strong>:</li>
+<li>Ve a <strong>System &gt; Package Manager &gt; Available Packages</strong>.</li>
+<li>Busca <code>openvpn-client-export</code> y haz clic en <strong>Install</strong>.</li>
+</ol>
+<p><img alt="openVpn-cs2" src="../../../assets/pfsense/pfsense-clientexport.png" /></p>
+<p>Ve a <strong>VPN &gt; OpenVPN &gt; Client Export</strong></p>
+<div class="highlight"><pre><span></span><code>- Vamos hasta el final en donde diga OpenVpn Clients
+- Recomiendo exportar la configuración haciendo click en most clients
+</code></pre></div>
+<h2 id="probar-la-conexion">Probar la Conexión</h2>
+<ol>
+<li>
+<p>En un dispositivo cliente, instala un cliente OpenVPN (como <a href="https://openvpn.net/vpn-client/">OpenVPN Connect</a>).</p>
+</li>
+<li>
+<p>Importa el archivo <code>.ovpn</code> descargado y conecta al servidor.</p>
+</li>
+<li>
+<p>Verifica que la conexión sea exitosa y que puedas acceder a los recursos necesarios.</p>
+</li>
+</ol>
+<p>¡Con esto, tu servidor OpenVPN en pfSense estará configurado y listo para ser utilizado!</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2024 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.83f73b43.min.js"></script>
+      
+    
+  </body>
+</html>
