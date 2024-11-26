@@ -20,28 +20,31 @@ theme:
   icon:
     logo: material/security
   extra:
-  favicon: 'docs/assets/favicon.png'
+    favicon: 'docs/assets/favicon.png'
 
 nav:
   - Inicio: index.md
   - Máquinas Vulnerables:
-    - maquinas-vulnerables/index.md
-    - DockerLabs:
-      - Muy Facìl:
-        - maquinas-vulnerables/dockerlabs/muyFacil/injection.md
-        - maquinas-vulnerables/dockerlabs/muyFacil/firsthacking.md
-      - Facil:
-        - maquinas-vulnerables/dockerlabs/facil/amor.md
+      - maquinas-vulnerables/index.md
+      - DockerLabs:
+          - Muy Fácil:
+              - maquinas-vulnerables/dockerlabs/muyFacil/injection.md
+              - maquinas-vulnerables/dockerlabs/muyFacil/firsthacking.md
+          - Fácil:
+              - maquinas-vulnerables/dockerlabs/facil/amor.md
   - Tutoriales:
-    - tutoriales/index.md
-    - Docker:
-      - tutoriales/Docker/primeros-pasos-docker.md
-      - tutoriales/Docker/instalacion-portainer.md
-    - Herramientas de Hacking:
-      - tutoriales/herramientas-hacking/nmap.md
-      - tutoriales/herramientas-hacking/wireshark.md
+      - tutoriales/index.md
+      - pfSense:
+          - tutoriales/pfSense/primeros-pasos-pfsense.md
+          - tutoriales/pfSense/configurar-openVpn-segura.md
+      - Docker:
+          - tutoriales/Docker/primeros-pasos-docker.md
+          - tutoriales/Docker/instalacion-portainer.md
+      - Herramientas de Hacking:
+          - tutoriales/herramientas-hacking/nmap.md
+          - tutoriales/herramientas-hacking/wireshark.md
   - Recursos:
-    - recursos/enlaces-utiles.md
+      - recursos/enlaces-utiles.md
   #   - recursos/glosario.md
   #   - recursos/bibliografia.md
   - Acerca de: about.md
@@ -60,8 +63,8 @@ markdown_extensions:
   - pymdownx.mark
   - attr_list
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
 copyright: |
-  &copy; 2024 <a href="https://github.com/Delta-39"  target="_blank" rel="noopener">D3LT4</a>
+  &copy; 2024 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
