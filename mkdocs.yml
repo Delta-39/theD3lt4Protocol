@@ -32,6 +32,9 @@ nav:
               - maquinas-vulnerables/dockerlabs/muyFacil/firsthacking.md
           - Fácil:
               - maquinas-vulnerables/dockerlabs/facil/amor.md
+  - Cyberdefenders:
+      - Threat Intel:
+          - cyberdefenders/threat-intel/iceId-lab.md
   - Tutoriales:
       - tutoriales/index.md
       - pfSense:
