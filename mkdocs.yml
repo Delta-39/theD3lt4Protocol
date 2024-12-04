@@ -33,6 +33,8 @@ nav:
           - Fácil:
               - maquinas-vulnerables/dockerlabs/facil/amor.md
   - Cyberdefenders:
+      - Network Forensics:
+        - cyberdefenders/network-forensics/webstrike-lab.md
       - Threat Intel:
           - cyberdefenders/threat-intel/iceId-lab.md
   - Tutoriales:
