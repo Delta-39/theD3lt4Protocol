@@ -43,4 +43,28 @@ En este caso ire a la plataforma de any run en donde obtendremos lo siguiente:
 ![Ice-5](../../assets/Cyberdefnders/Threat%20Intel/IceID/ice5.png)
 ![Ice-6](../../assets/Cyberdefnders/Threat%20Intel/IceID/ice6.png)
 
-### Q4 What is the MD5 hash of the executable in Q2 downloaded from metaflip.io?
+### Q5 From the domains mentioned in Q3, a DNS registrar was predominantly used by the threat actor to host their harmful content, enabling the malware's functionality. Can you specify the Registrar INC?
+
+Para resolver esta pregunta lo que debemos hacer es ir a los dominios asociados a este malware, cada dominio tiene que estar registrado a nombre de alguien, veremos uno en particular que coincide con el formato de la respuesta.
+
+![Ice-7](../../assets/Cyberdefnders/Threat%20Intel/IceID/ice7.png)
+
+### Q6 Could you specify the threat actor linked to the sample provided?
+
+Para resolver esto usaremos el framework de MITRE `ATT&CK`, yo lo que hice fue buscar el nombre del malware para asi saber las `APT` que la usan. Obtuve los siguiente resultados.
+
+![Ice-8](../../assets/Cyberdefnders/Threat%20Intel/IceID/ice8.png)
+
+Encontramos que hay dos `APT` relacionada con con el malware en cuestion
+
+![Ice-9](../../assets/Cyberdefnders/Threat%20Intel/IceID/ice9.png)
+
+### Q7 In the Execution phase, what function does the malware employ to fetch extra payloads onto the system?
+
+Ahora lo que debemos encontrar es la funcion de la `API` de windows que usa el malware para descargar el resto de las payloads. Para iremos al link de triage que habiamos encontrado en X. Iremos hasta malware config, source y veremos que hay un codigo. Hay algo que se repita que te llame la atencion?
+
+> Te dejo un recurso para que veas cuales son las funciones mas usadas en malware [MalAPI](https://malapi.io/)
+
+![Ice-10](../../assets/Cyberdefnders/Threat%20Intel/IceID/ice10.png)
+
+Y con esto finalizamos este write up. Espero que te haya servido.

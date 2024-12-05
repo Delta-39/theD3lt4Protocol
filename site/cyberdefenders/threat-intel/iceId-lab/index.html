@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
     
     
       
@@ -891,9 +891,27 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#q4-what-is-the-md5-hash-of-the-executable-in-q2-downloaded-from-metaflipio_1" class="md-nav__link">
+  <a href="#q5-from-the-domains-mentioned-in-q3-a-dns-registrar-was-predominantly-used-by-the-threat-actor-to-host-their-harmful-content-enabling-the-malwares-functionality-can-you-specify-the-registrar-inc" class="md-nav__link">
     <span class="md-ellipsis">
-      Q4 What is the MD5 hash of the executable in Q2 downloaded from metaflip.io?
+      Q5 From the domains mentioned in Q3, a DNS registrar was predominantly used by the threat actor to host their harmful content, enabling the malware's functionality. Can you specify the Registrar INC?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q6-could-you-specify-the-threat-actor-linked-to-the-sample-provided" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q6 Could you specify the threat actor linked to the sample provided?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q7-in-the-execution-phase-what-function-does-the-malware-employ-to-fetch-extra-payloads-onto-the-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q7 In the Execution phase, what function does the malware employ to fetch extra payloads onto the system?
     </span>
   </a>
   
@@ -1394,7 +1412,21 @@
 <p>En este caso ire a la plataforma de any run en donde obtendremos lo siguiente:</p>
 <p><img alt="Ice-5" src="../../../assets/Cyberdefnders/Threat%20Intel/IceID/ice5.png" />
 <img alt="Ice-6" src="../../../assets/Cyberdefnders/Threat%20Intel/IceID/ice6.png" /></p>
-<h3 id="q4-what-is-the-md5-hash-of-the-executable-in-q2-downloaded-from-metaflipio_1">Q4 What is the MD5 hash of the executable in Q2 downloaded from metaflip.io?</h3>
+<h3 id="q5-from-the-domains-mentioned-in-q3-a-dns-registrar-was-predominantly-used-by-the-threat-actor-to-host-their-harmful-content-enabling-the-malwares-functionality-can-you-specify-the-registrar-inc">Q5 From the domains mentioned in Q3, a DNS registrar was predominantly used by the threat actor to host their harmful content, enabling the malware's functionality. Can you specify the Registrar INC?</h3>
+<p>Para resolver esta pregunta lo que debemos hacer es ir a los dominios asociados a este malware, cada dominio tiene que estar registrado a nombre de alguien, veremos uno en particular que coincide con el formato de la respuesta.</p>
+<p><img alt="Ice-7" src="../../../assets/Cyberdefnders/Threat%20Intel/IceID/ice7.png" /></p>
+<h3 id="q6-could-you-specify-the-threat-actor-linked-to-the-sample-provided">Q6 Could you specify the threat actor linked to the sample provided?</h3>
+<p>Para resolver esto usaremos el framework de MITRE <code>ATT&amp;CK</code>, yo lo que hice fue buscar el nombre del malware para asi saber las <code>APT</code> que la usan. Obtuve los siguiente resultados.</p>
+<p><img alt="Ice-8" src="../../../assets/Cyberdefnders/Threat%20Intel/IceID/ice8.png" /></p>
+<p>Encontramos que hay dos <code>APT</code> relacionada con con el malware en cuestion</p>
+<p><img alt="Ice-9" src="../../../assets/Cyberdefnders/Threat%20Intel/IceID/ice9.png" /></p>
+<h3 id="q7-in-the-execution-phase-what-function-does-the-malware-employ-to-fetch-extra-payloads-onto-the-system">Q7 In the Execution phase, what function does the malware employ to fetch extra payloads onto the system?</h3>
+<p>Ahora lo que debemos encontrar es la funcion de la <code>API</code> de windows que usa el malware para descargar el resto de las payloads. Para iremos al link de triage que habiamos encontrado en X. Iremos hasta malware config, source y veremos que hay un codigo. Hay algo que se repita que te llame la atencion?</p>
+<blockquote>
+<p>Te dejo un recurso para que veas cuales son las funciones mas usadas en malware <a href="https://malapi.io/">MalAPI</a></p>
+</blockquote>
+<p><img alt="Ice-10" src="../../../assets/Cyberdefnders/Threat%20Intel/IceID/ice10.png" /></p>
+<p>Y con esto finalizamos este write up. Espero que te haya servido.</p>
 
 
 
