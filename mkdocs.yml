@@ -1,6 +1,10 @@
 site_name: "The D3LT4 Protocol"
 site_description: "Guías de hacking ético y tutoriales de ciberseguridad"
+site_author: Martin Terribile
 theme:
+  font:
+    text: Roboto
+    code: Roboto Mono
   name: material
   palette:
     scheme: slate
@@ -17,10 +21,21 @@ theme:
     - content.code.annotation
     - content.code.copy
   language: es
+  favicon: assets/favicon.png
   icon:
     logo: material/security
   extra:
-    favicon: 'docs/assets/favicon.png'
+    analytics:
+      provider: Google
+      property: G-E7T6RDTQNB
+      feedback:
+        title: Te sirvio el contenido de esta pagina?
+        ratings:
+          - icon: material/emoticon-happy-outline
+            name: This page was helpful
+            data: 1
+            note: >-
+              Gracias por tu feedback!
 
 nav:
   - Inicio: index.md
