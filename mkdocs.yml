@@ -2,17 +2,29 @@ site_name: "The D3LT4 Protocol"
 site_description: "Guías de hacking ético y tutoriales de ciberseguridad"
 site_author: Martin Terribile
 theme:
+  name: material
   font:
     text: Roboto
     code: Roboto Mono
-  name: material
   palette:
-    scheme: slate
-    primary: teal
-    accent: cyan
+    - scheme: slate
+      primary: black
+      accent: blue
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode.
+
+    - scheme: default  
+      primary: black 
+      accent: blue   
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode.
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.expand
+    - navigation.instant
     - toc.integrate
     - navigation.top
     - search.suggest
@@ -20,10 +32,14 @@ theme:
     - content.tabs.link
     - content.code.annotation
     - content.code.copy
+    - content.code.lines
+    - content.figures
+    - navigation.tabs.sticky
+    - header.autohide
   language: es
   favicon: assets/favicon.png
   icon:
-    logo: material/security
+    logo: material/lock
   extra:
     analytics:
       provider: Google
@@ -70,8 +86,11 @@ nav:
   - Acerca de: about.md
 
 markdown_extensions:
+  - pymdownx.superfences
   - pymdownx.highlight:
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - admonition
@@ -79,7 +98,6 @@ markdown_extensions:
       generic: true
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
   - pymdownx.mark
   - attr_list
   - pymdownx.emoji:
