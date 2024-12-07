@@ -6,10 +6,6 @@ Esta guia esuna ayuda para la resolucion del laboratorio IceID de cuberdefenders
 
 Se identificó un grupo de ciberamenaza por iniciar campañas de phishing a gran escala para distribuir cargas útiles maliciosas adicionales. Las cargas útiles más frecuentemente encontradas fueron IcedID. Se te ha proporcionado un hash de una muestra de IcedID con el propósito de analizar y monitorear las actividades de este grupo de amenaza persistente avanzada (APT).
 
-## Cuestionario
-
-Comenzaremos descargando el archivo que nos provee el laboratorio, el mismo es un archivo que contiene el hash: **`d86405130184186154daa4a5132dd1364ab05d1f14034c7f0a0cda690a91116d`**, con este hash nos dirigiremos a [VirusTotal](https://www.virustotal.com/) y colocaremos el hash obtenido para ver el analisis de dicho archivo.
-
 ### Q1 - Nombre del archivo con el hash
 
 Nos iremos a la pestaña `Details`, en la cual tendremos todos los detalles de este archivo. Si vamos un poco hacia abajo encontraremos un divisor con el nombre de `Names`, estos son todos los nombres que se descubrieron digamos, que pudo tener este archivo en cuestion.
