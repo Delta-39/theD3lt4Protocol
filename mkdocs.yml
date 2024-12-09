@@ -34,7 +34,6 @@ theme:
     - content.code.copy
     - content.code.lines
     - content.figures
-    - navigation.tabs.sticky
     - header.autohide
   language: es
   favicon: assets/favicon.png
@@ -73,6 +72,8 @@ nav:
   - Cyberdefenders:
       - Network Forensics:
         - cyberdefenders/network-forensics/webstrike-lab.md
+        - cyberdefenders/network-forensics/poisoned-credentials-lab.md
+        - cyberdefenders/network-forensics/tomcat-lab.md
       - Threat Intel:
           - cyberdefenders/threat-intel/iceId-lab.md
   - Tutoriales:
@@ -109,7 +110,7 @@ markdown_extensions:
   - attr_list
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 copyright: |
   &copy; 2024 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
