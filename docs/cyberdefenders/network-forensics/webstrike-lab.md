@@ -1,6 +1,6 @@
-# Guia de resolucion Webstrike Lab
+# :detective: Webstrike Lab
 
-Esta guia esuna ayuda para la resolucion del laboratorio [Webstrike Lab](https://cyberdefenders.org/blueteam-ctf-challenges/webstrike/) de cyberdefenders.¡Manos a la obra!
+Esta guia es una ayuda para la resolucion del laboratorio [Webstrike Lab](https://cyberdefenders.org/blueteam-ctf-challenges/webstrike/) de cyberdefenders.
 
 ## Escenario
 
@@ -49,6 +49,3 @@ Esto es tan simple como volver a seguir la secuencia de subida del archivo **`im
 Filtraremos los paquetes `tcp` con puerto de destino 8080, aca solamente debemos seguir la trama tcp para ver toda la actividad del atacante dentro de nuestro servidor ubuntu
 
 ![webstrike6](../../assets/Cyberdefnders/Network%20Forensics/Webstrike/webstrike6.png)
-
-
-¡ Y listo ! Espero que te sirva.
