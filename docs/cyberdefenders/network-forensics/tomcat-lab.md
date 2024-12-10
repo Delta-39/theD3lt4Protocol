@@ -1,4 +1,4 @@
-# :detective: Tomcat Lab
+# :detective: Tomcat Takeover Lab
 
 Esta guia es una ayuda para la resolucion del laboratorio [Tomcat Lab](https://cyberdefenders.org/blueteam-ctf-challenges/tomcat-takeover/) de cyberdefenders.
 
@@ -56,7 +56,7 @@ Para buscar el archivo, lo que hice fue buscar paquetes en los que tengan un apa
 
 ![tomcat6](../../assets/Cyberdefnders/Network%20Forensics/tomcat%20lab/tomcat6.png)
 
-### Q7 - Codigo de la reverse shell
+### Q8 - Codigo de la reverse shell
 
 Este me costo un poquito mas, ya que para ver lo que hizo el atancante en mi servidor tengo qu hacer seguimiento a la conversacion de un paquete `tcp`, la problematica es, ¿ Que paquete ?
 

@@ -24,7 +24,7 @@
     
     
       
-        <title>🕵 Tomcat Lab - The D3LT4 Protocol</title>
+        <title>🕵 Tomcat Takeover Lab - The D3LT4 Protocol</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tomcat-lab" class="md-skip">
+        <a href="#tomcat-takeover-lab" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              🕵 Tomcat Lab
+              🕵 Tomcat Takeover Lab
             
           </span>
         </div>
@@ -811,7 +811,7 @@
           
   
   <span class="md-ellipsis">
-    🕵 Tomcat Lab
+    🕵 Tomcat Takeover Lab
   </span>
   
 
@@ -822,7 +822,7 @@
         
   
   <span class="md-ellipsis">
-    🕵 Tomcat Lab
+    🕵 Tomcat Takeover Lab
   </span>
   
 
@@ -917,9 +917,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#q7-codigo-de-la-reverse-shell" class="md-nav__link">
+  <a href="#q8-codigo-de-la-reverse-shell" class="md-nav__link">
     <span class="md-ellipsis">
-      Q7 - Codigo de la reverse shell
+      Q8 - Codigo de la reverse shell
     </span>
   </a>
   
@@ -1479,7 +1479,7 @@
                   
 
 
-<h1 id="tomcat-lab"><img alt="🕵" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f575.svg" title=":detective:" /> Tomcat Lab</h1>
+<h1 id="tomcat-takeover-lab"><img alt="🕵" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f575.svg" title=":detective:" /> Tomcat Takeover Lab</h1>
 <p>Esta guia es una ayuda para la resolucion del laboratorio <a href="https://cyberdefenders.org/blueteam-ctf-challenges/tomcat-takeover/">Tomcat Lab</a> de cyberdefenders.</p>
 <h2 id="escenario">Escenario</h2>
 <p>Nuestro equipo del SOC ha detectado actividad sospechosa en uno de los servidores web dentro de la intranet de la empresa. Para obtener una comprensión más profunda de la situación, el equipo ha capturado el tráfico de red para su análisis. Este archivo pcap podría contener una serie de actividades maliciosas que han resultado en el compromiso del servidor web Apache Tomcat. Necesitamos investigar este incidente más a fondo.</p>
@@ -1511,7 +1511,7 @@ Como encontrar la herramienta usada?, tan simple como agarrar cualquiera de esta
 <h3 id="q7-nombre-del-archivo-subido">Q7 - Nombre del archivo subido</h3>
 <p>Para buscar el archivo, lo que hice fue buscar paquetes en los que tengan un apartado mas de tipo <code>MIME</code>, esto quiere decir que se estan subiendo archivos comprendidos en este formato (esto se usa cuando en un formulario normal web se quieren enviar imagenes o algun otro archivo que no sea texto.). Encontramos el paquete y veremos lo siguiente</p>
 <p><img alt="tomcat6" src="../../../assets/Cyberdefnders/Network%20Forensics/tomcat%20lab/tomcat6.png" /></p>
-<h3 id="q7-codigo-de-la-reverse-shell">Q7 - Codigo de la reverse shell</h3>
+<h3 id="q8-codigo-de-la-reverse-shell">Q8 - Codigo de la reverse shell</h3>
 <p>Este me costo un poquito mas, ya que para ver lo que hizo el atancante en mi servidor tengo qu hacer seguimiento a la conversacion de un paquete <code>tcp</code>, la problematica es, ¿ Que paquete ?</p>
 <p>Sigamos la logica, una vez el archivo de la reverse shell, deberiamos hacer el seguimiento la conversacion tcp que siga.</p>
 <p><img alt="tomcat8" src="../../../assets/Cyberdefnders/Network%20Forensics/tomcat%20lab/tomcat8.png" /></p>

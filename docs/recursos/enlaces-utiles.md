@@ -23,14 +23,16 @@ En esta sección encontrarás enlaces a recursos útiles para mejorar tus habili
 - [Ciberseguridad en Español](https://ciberseguridad.es/) - Comunidad en español dedicada a la seguridad informática.
 
 ## Red Team
-- [Rev Shell Generator](https://www.revshells.com/) - 
-- [GTFOBins](https://gtfobins.github.io/)
+- [Rev Shell Generator](https://www.revshells.com/) - Pagina con varias reverse shell para implementar
+- [GTFOBins](https://gtfobins.github.io/) - Vulnerabilidades para explotar binarios
 
 ## Blue Team
 
 - [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks) - Hardening de S.O.
 - [Bandit](https://bandit.readthedocs.io/en/latest/) - Herramienta para auditar codigo python.
 - [OWASP TOP 10](https://owasp.org/www-project-top-ten/) -  Top 10 ataques a aplicaciones web.
+- [What's my ip?](https://whatismyipaddress.com/) - Informacion util sobre direcciones ip.
+- [C2 Tracker](https://tracker.viriback.com/) - Base de datos con direcciones ip usadas para C2.
 
 ## Frameworks
 - [NIST](https://www.nist.gov/cyberframework) - Marco de ciberseguridad del NIST para mejorar la gestión de riesgos en organizaciones.
