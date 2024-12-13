@@ -70,6 +70,8 @@ nav:
           - Fácil:
               - maquinas-vulnerables/dockerlabs/facil/amor.md
   - Cyberdefenders:
+      - Endpoint Forensics:
+        - cyberdefenders/endpoint-forensics/insider.md
       - Network Forensics:
         - cyberdefenders/network-forensics/webstrike-lab.md
         - cyberdefenders/network-forensics/poisoned-credentials-lab.md
