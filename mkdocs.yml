@@ -58,7 +58,6 @@ theme:
               Thanks for your feedback! Help us improve this page by
               using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
 
-
 nav:
   - Inicio: index.md
   - Máquinas Vulnerables:
@@ -72,6 +71,7 @@ nav:
   - Cyberdefenders:
       - Endpoint Forensics:
         - cyberdefenders/endpoint-forensics/insider.md
+        - cyberdefenders/endpoint-forensics/redline-stealer-lab.md
       - Network Forensics:
         - cyberdefenders/network-forensics/webstrike-lab.md
         - cyberdefenders/network-forensics/poisoned-credentials-lab.md
