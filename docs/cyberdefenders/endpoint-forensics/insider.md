@@ -81,4 +81,4 @@ Para ver esto debemos ir nuevamente a la ruta `/var/log`, pero esta vez ver el `
 
 Ya lo vimos anteriormente en el historial de la terminal, nos encontramos en la carpeta `firsthack`, dentro de `Documents`
 
-Y con esto finalizamos el write up de este laboratorio. Espero que ye haya servido.
+Y con esto finalizamos el write up de este laboratorio. Espero que te haya servido.
