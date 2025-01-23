@@ -82,6 +82,8 @@ nav:
           - cyberdefenders/threat-intel/iceId-lab.md
   - Tutoriales:
       - tutoriales/index.md
+      - Analisis Malware:
+          - tutoriales/analisis-malware/laboratorio-malware.md
       - pfSense:
           - tutoriales/pfSense/primeros-pasos-pfsense.md
           - tutoriales/pfSense/configurar-openVpn-segura.md
