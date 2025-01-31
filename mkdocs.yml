@@ -82,6 +82,8 @@ nav:
           - cyberdefenders/threat-intel/iceId-lab.md
   - Tutoriales:
       - tutoriales/index.md
+      - Active Directory:
+        - tutoriales/active-directory/creacion-dominio.md
       - Analisis Malware:
           - tutoriales/analisis-malware/laboratorio-malware.md
       - pfSense:
