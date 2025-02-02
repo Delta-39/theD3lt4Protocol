@@ -84,6 +84,7 @@ nav:
       - tutoriales/index.md
       - Active Directory:
         - tutoriales/active-directory/creacion-dominio.md
+        - tutoriales/active-directory/creacion-gpo.md
       - Analisis Malware:
           - tutoriales/analisis-malware/laboratorio-malware.md
       - pfSense:
