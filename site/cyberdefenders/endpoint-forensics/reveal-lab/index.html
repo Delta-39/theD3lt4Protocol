@@ -20,11 +20,11 @@
       
       
       <link rel="icon" href="../../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.42">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.41">
     
     
       
-        <title>Reveal lab - The D3LT4 Protocol</title>
+        <title>📂 Reveal Lab - The D3LT4 Protocol</title>
       
     
     
@@ -75,6 +75,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#reveal-lab" class="md-skip">
+          Saltar a contenido
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -105,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Reveal lab
+              📂 Reveal Lab
             
           </span>
         </div>
@@ -820,16 +825,126 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    📂 Reveal Lab
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Reveal lab
+    📂 Reveal Lab
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#escenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Escenario
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Escenario">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q1-proceso-responsable-de-la-actividad-maliciosa" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q1 - Proceso responsable de la actividad maliciosa
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q2-ruta-del-ejecutbale-sospechoso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q2 - Ruta del ejecutbale sospechoso
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q3-direccion-ip-con-la-que-se-comunica-el-malware" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q3 - Direccion IP con la que se comunica el malware.
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q4-ciudad-asociada-a-la-direccion-ip" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q4 - Ciudad asociada a la direccion IP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q5-hash-del-archivo-malicioso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q5 - Hash del archivo malicioso
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q6-timestamp-de-compilacion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q6 - Timestamp de compilación
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q7-dominio-con-el-que-se-comunica" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q7 - Dominio con el que se comunica
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1655,9 +1770,32 @@
                   
 
 
-  <h1>Reveal lab</h1>
-
-
+<h1 id="reveal-lab"><img alt="📂" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.0.3/assets/svg/1f4c2.svg" title=":open_file_folder:" /> Reveal Lab</h1>
+<p>Esta guia es una ayuda para la resolucion del laboratorio <a href="https://cyberdefenders.org/blueteam-ctf-challenges/ramnit/">Reveal</a> de cyberdefenders.</p>
+<h2 id="escenario">Escenario</h2>
+<p>Nuestro sistema de detección de intrusiones ha alertado sobre un comportamiento sospechoso en una estación de trabajo, lo que apunta a una probable intrusión de malware. Se ha realizado un volcado de memoria de este sistema para su análisis. Tu tarea es analizar este volcado, rastrear las acciones del malware y reportar los hallazgos clave.</p>
+<h3 id="q1-proceso-responsable-de-la-actividad-maliciosa">Q1 - Proceso responsable de la actividad maliciosa</h3>
+<p>Arranque por correr los plugins de <strong><code>volatility</code></strong> correspondientes a windows, pslist y malfind. En los mismos no encontre nada que me llamase la atención por lo que decidi correr sobre el volcado de memoria el plugin <code>cmdline</code>, este plugin me devuelve los ultimos comandos corrdidos sobre la consola <code>cmd</code>. En esta encontre un proceso que me parecio raro.</p>
+<p><img alt="ramnit1" src="../../../assets/Cyberdefnders/Endpoint%20Forensics/Rammit%20Lab/rammit1.png" /></p>
+<p>La mayoria de los ejecutiables se suelen correr desde la carpeta <code>system32</code> cuando se trata de windows, me llamo la tencion que un ejecutable, y mas trantadose de chrome, se ejecute desde la carpeta de <code>downloads</code>.</p>
+<h3 id="q2-ruta-del-ejecutbale-sospechoso">Q2 - Ruta del ejecutbale sospechoso</h3>
+<p>Como podemos ver en la captura anterior, aparece la ruta del ejecutable sospechoso.</p>
+<h3 id="q3-direccion-ip-con-la-que-se-comunica-el-malware">Q3 - Direccion IP con la que se comunica el malware.</h3>
+<p>Para esta pregunta corri el plugin de <code>volatility</code> llamado <strong><code>windows.netscan</code></strong>, este plugin lo que hace es darme el detalle de las conexiones de red activas. Encontre lo siguiente:</p>
+<p><img alt="ramnit2" src="../../../assets/Cyberdefnders/Endpoint%20Forensics/Rammit%20Lab/ramnit2.png" /></p>
+<h3 id="q4-ciudad-asociada-a-la-direccion-ip">Q4 - Ciudad asociada a la direccion IP</h3>
+<p>Aca lo que debemos hacer es simplemente irnos a la web de <a href="https://whatismyipaddress.com/">What's my ip</a>, colocar la direccion ip que encontramos en el punto anterior y nos dara la ciudad en cuestion.</p>
+<p><img alt="ramnit3" src="../../../assets/Cyberdefnders/Endpoint%20Forensics/Rammit%20Lab/ramnit3.png" /></p>
+<h3 id="q5-hash-del-archivo-malicioso">Q5 - Hash del archivo malicioso</h3>
+<p>En esta pregunta use el plugin <strong><code>windows.dumpfiles</code></strong> indicado el <code>PID</code> del archivo que queria obtener, ya con el ejecutable solamente hay que hacerle un hash <strong><code>SHA1</code></strong> y listo.</p>
+<p><img alt="ramnit4" src="../../../assets/Cyberdefnders/Endpoint%20Forensics/Rammit%20Lab/ramnit4.png" /></p>
+<h3 id="q6-timestamp-de-compilacion">Q6 - Timestamp de compilación</h3>
+<p>Ya que obtuvimos el hash en el punto anterior, ahora nos dirijiremos a la pagina de <a href="https://www.virustotal.com/">VirusTotal</a>, en donde colocaremos el hash obtenido. Una ves hecho lo anterior buscaremos en el apartado de detalles y encontraremos la fecha de compilación del archivo</p>
+<p><img alt="ramnit5" src="../../../assets/Cyberdefnders/Endpoint%20Forensics/Rammit%20Lab/ramnit6.png" /></p>
+<h3 id="q7-dominio-con-el-que-se-comunica">Q7 - Dominio con el que se comunica</h3>
+<p>Manteniendome en la pagina de <strong><code>VirusTotal</code></strong> iremos al apartado de relaciones en donde ecnotraremos los dominios y subdominions con los que este malware se intenta comunicar. Uno en particular es la respuesta correcta.</p>
+<p><img alt="ramnit6" src="../../../assets/Cyberdefnders/Endpoint%20Forensics/Rammit%20Lab/ramnit5.png" /></p>
+<p>¡Y listo! Con esto terminamos esta guia, espero que te haya servido.</p>
 
 
 
