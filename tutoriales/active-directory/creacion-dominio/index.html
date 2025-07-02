@@ -1,0 +1,2155 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Guías de hacking ético y tutoriales de ciberseguridad">
+      
+      
+        <meta name="author" content="Martin Terribile">
+      
+      
+      
+        <link rel="prev" href="../../">
+      
+      
+        <link rel="next" href="../creacion-gpo/">
+      
+      
+      <link rel="icon" href="../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Instalación y Configuración de Active Directory en Windows Server 🖥️🔐 - The D3LT4 Protocol</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#instalacion-y-configuracion-de-active-directory-en-windows-server" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-header__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5 5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The D3LT4 Protocol
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Instalación y Configuración de Active Directory en Windows Server 🖥️🔐
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode."  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode." for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to dark mode."  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode." for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../maquinas-vulnerables/" class="md-tabs__link">
+          
+  
+  
+  Máquinas Vulnerables
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../cyberdefenders/endpoint-forensics/insider/" class="md-tabs__link">
+          
+  
+  
+  Cyberdefenders
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  Tutoriales
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../recursos/enlaces-utiles/" class="md-tabs__link">
+          
+  
+  
+  Recursos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Acerca de
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-nav__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5 5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg>
+
+    </a>
+    The D3LT4 Protocol
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas Vulnerables
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    DockerLabs
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            DockerLabs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Muy Fácil
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Muy Fácil
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Injection 💉
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/firsthacking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FirstHacking 🕵️‍♀️
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fácil
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fácil
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/amor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Amor ❤️
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/aguademayo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Aguademayo 💧
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Cyberdefenders
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Cyberdefenders
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Endpoint Forensics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Endpoint Forensics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/insider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Insider Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/redline-stealer-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Redline Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/ramnit-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Ramnit Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/reveal-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Reveal Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Network Forensics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Network Forensics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/webstrike-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    🕵 Webstrike Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/poisoned-credentials-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    🕵 Poisoned Credentials Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/tomcat-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    🕵 Tomcat Takeover Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Threat Intel
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Threat Intel
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/threat-intel/iceId-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guia de resolucion IceID Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutoriales
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Tutoriales
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutoriales
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Active Directory
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Active Directory
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Instalación y Configuración de Active Directory en Windows Server 🖥️🔐
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Instalación y Configuración de Active Directory en Windows Server 🖥️🔐
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#que-es-active-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      ¿Qué es Active Directory?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="¿Qué es Active Directory?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#estructura-de-active-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Estructura de Active Directory
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instalacion-de-active-directory-en-windows-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalación de Active Directory en Windows Server
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instalación de Active Directory en Windows Server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#requisitos-previos" class="md-nav__link">
+    <span class="md-ellipsis">
+      Requisitos Previos
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-instalar-el-rol-de-active-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Instalar el Rol de Active Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-promover-el-servidor-a-controlador-de-dominio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Promover el Servidor a Controlador de Dominio
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#crear-un-nuevo-usuario-administrador-y-deshabilitar-la-cuenta-de-administrador-predeterminada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Crear un Nuevo Usuario Administrador y Deshabilitar la Cuenta de Administrador Predeterminada
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Crear un Nuevo Usuario Administrador y Deshabilitar la Cuenta de Administrador Predeterminada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-crear-un-nuevo-usuario-administrador" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Crear un Nuevo Usuario Administrador
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-deshabilitar-la-cuenta-de-administrador-predeterminada" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Deshabilitar la Cuenta de Administrador Predeterminada
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#unir-una-maquina-virtual-con-windows-10-al-dominio" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unir una Máquina Virtual con Windows 10 al Dominio
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Unir una Máquina Virtual con Windows 10 al Dominio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preguntas-frecuentes-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preguntas Frecuentes (FAQ)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../creacion-gpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Crear OU y GPO con Script de Bienvenida en AD 🖥️🔐
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Analisis Malware
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Analisis Malware
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../analisis-malware/laboratorio-malware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Arma tu propio laboratorio para analisis de malware
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    pfSense
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            pfSense
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pfSense/primeros-pasos-pfsense/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Primeros pasos con pfSense 🧱
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pfSense/configurar-openVpn-segura/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuración de OpenVPN en pfSense 📡🔑
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Docker
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            Docker
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/primeros-pasos-docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Primeros pasos con Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/instalacion-portainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Instalación de Portainer en un Servidor Ubuntu
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Herramientas de Hacking
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            Herramientas de Hacking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../herramientas-hacking/nmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nmap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../herramientas-hacking/wireshark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Wireshark
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Recursos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Recursos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recursos/enlaces-utiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enlaces Útiles
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Acerca de
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="instalacion-y-configuracion-de-active-directory-en-windows-server">Instalación y Configuración de Active Directory en Windows Server 🖥️🔐</h1>
+<p>En este artículo, te guiaré paso a paso para instalar y configurar <strong>Active Directory (AD)</strong> en un servidor Windows Server. Además, explicaré la estructura de AD (bosques, dominios, árboles, etc.), cómo crear usuarios en el dominio, cómo unir una máquina virtual con Windows 10 al dominio, y cómo mejorar la seguridad creando un nuevo usuario administrador y deshabilitando la cuenta de administrador predeterminada.</p>
+<hr />
+<h2 id="que-es-active-directory">¿Qué es Active Directory?</h2>
+<p><img alt="ad-banner" src="../../../assets/tutoriales/AD/instalacion-configuracion/banner-ad.png" /></p>
+<p>Active Directory es un servicio de directorio desarrollado por Microsoft que se utiliza para gestionar usuarios, equipos, permisos y otros recursos en una red. Es una herramienta esencial en entornos empresariales, ya que permite centralizar la administración de la red y mejorar la seguridad.</p>
+<h3 id="estructura-de-active-directory">Estructura de Active Directory</h3>
+<ol>
+<li>
+<p><strong>Bosque (Forest)</strong>: Es el contenedor más grande en AD. Un bosque puede contener múltiples dominios y define un límite de seguridad. Todos los dominios dentro de un bosque comparten un esquema común, un catálogo global y una relación de confianza bidireccional.</p>
+</li>
+<li>
+<p><strong>Dominio (Domain)</strong>: Es una agrupación lógica de objetos (usuarios, equipos, grupos, etc.) que comparten una misma base de datos de directorio y políticas de seguridad. Cada dominio tiene un nombre único (por ejemplo, <code>empresa.com</code>).</p>
+</li>
+<li>
+<p><strong>Árbol (Tree)</strong>: Es una colección de dominios que comparten un espacio de nombres contiguo. Por ejemplo, si tenes un dominio principal <code>empresa.com</code>, un subdominio <code>sucursal.empresa.com</code> formaría parte del mismo árbol.</p>
+</li>
+<li>
+<p><strong>Unidades Organizativas (OU)</strong>: Son contenedores dentro de un dominio que se utilizan para organizar objetos (usuarios, equipos, etc.) y aplicar políticas de grupo (GPO) de manera más granular.</p>
+</li>
+<li>
+<p><strong>Objetos</strong>: Son los elementos que se gestionan en AD, como usuarios, equipos, grupos y recursos compartidos.</p>
+</li>
+</ol>
+<p><img alt="ad-1" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-forest.jpg" /></p>
+<hr />
+<h2 id="instalacion-de-active-directory-en-windows-server">Instalación de Active Directory en Windows Server</h2>
+<h3 id="requisitos-previos">Requisitos Previos</h3>
+<ul>
+<li>Un servidor con Windows Server (2016, 2019 o 2022).</li>
+<li>Una dirección IP estática configurada en el servidor.</li>
+<li>Acceso de administrador al servidor.</li>
+</ul>
+<h3 id="paso-1-instalar-el-rol-de-active-directory">Paso 1: Instalar el Rol de Active Directory</h3>
+<ol>
+<li>Abri el <strong>Administrador del Servidor</strong> desde el menú Inicio.</li>
+<li>Clic en <strong>Agregar roles y características</strong>.
+    <img alt="ad-2" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-1.png" /></li>
+<li>En el asistente, elegi <strong>Instalación basada en roles o características</strong> y clic en <strong>Siguiente</strong>.
+    <img alt="ad-3" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-2.png" /></li>
+<li>Selecciona el servidor en el que deseas instalar AD y haz clic en <strong>Siguiente</strong>.
+    <img alt="ad-4" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-3.png" /></li>
+<li>En la lista de roles, marca <strong>Servicios de dominio de Active Directory</strong>.
+    <img alt="ad-5" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-4.png" /></li>
+<li>Clic en <strong>Agregar características</strong> cuando te lo solicite y luego en <strong>Siguiente</strong>.</li>
+<li>Completa el asistente y clic en <strong>Instalar</strong>.
+    <img alt="ad-6" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-5.png" /></li>
+</ol>
+<h3 id="paso-2-promover-el-servidor-a-controlador-de-dominio">Paso 2: Promover el Servidor a Controlador de Dominio</h3>
+<ol>
+<li>Cuando termine de instalarse, vas a ver un link de color azul <strong>Promover este servidor a controlador de dominio</strong>, clic ahi.
+    <img alt="ad-7" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-6.png" /></li>
+<li>En el asistente, selecciona <strong>Agregar un nuevo bosque</strong> y escribe el nombre del dominio raíz (por ejemplo, <code>lab.local</code>).
+    <img alt="ad-8" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-7.png" /></li>
+<li>Configura las opciones de nivel funcional del bosque y del dominio.</li>
+<li>Completa el asistente y haz clic en <strong>Instalar</strong>. El servidor se reiniciará nuevamente.
+    <img alt="ad-11" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-8.png" />
+    <img alt="ad-10" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-9.png" /></li>
+</ol>
+<!-- ---
+
+## Creación de Usuarios en el Dominio
+
+1. Abre **Usuarios y equipos de Active Directory** desde el menú Inicio o desde el **Administrador del Servidor**.
+2. Navega hasta la **Unidad Organizativa (OU)** donde deseas crear el usuario (por ejemplo, `Usuarios`).
+3. Haz clic derecho en la OU y selecciona **Nuevo > Usuario**.
+4. Completa los campos obligatorios, como el nombre de usuario y la contraseña.
+5. Configura las opciones de contraseña (por ejemplo, si el usuario debe cambiar la contraseña en el próximo inicio de sesión).
+6. Haz clic en **Finalizar** para crear el usuario. -->
+
+<hr />
+<h2 id="crear-un-nuevo-usuario-administrador-y-deshabilitar-la-cuenta-de-administrador-predeterminada">Crear un Nuevo Usuario Administrador y Deshabilitar la Cuenta de Administrador Predeterminada</h2>
+<h3 id="paso-1-crear-un-nuevo-usuario-administrador">Paso 1: Crear un Nuevo Usuario Administrador</h3>
+<ol>
+<li>Abri <strong>Usuarios y equipos de Active Directory</strong>.
+    <img alt="ad-11" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-10.png" /></li>
+<li>Busca dentro de la carpeta del dominio que creaste, la carpeta <strong>Usuarios</strong> y clic en ella.</li>
+<li>Dentro de esta carpeta vas a copiar el usuario <strong>Administrador</strong>
+    <img alt="ad-12" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-11.png" /></li>
+<li>Ya con el usuario nuevo creado, te recomiendo que revises que sea parte de los mismos grupos que el usuario <strong>Administrador</strong></li>
+</ol>
+<h3 id="paso-2-deshabilitar-la-cuenta-de-administrador-predeterminada">Paso 2: Deshabilitar la Cuenta de Administrador Predeterminada</h3>
+<ol>
+<li>Abre <strong>Usuarios y equipos de Active Directory</strong>.</li>
+<li>Navega hasta la carpeta <strong>Usuarios</strong>.</li>
+<li>Busca la cuenta <strong>Administrador</strong> (su nombre completo es <code>Administrator</code>).</li>
+<li>Haz clic derecho sobre la cuenta y selecciona <strong>Deshabilitar cuenta</strong>.</li>
+<li>Confirma la acción cuando se te solicite.
+<img alt="ad-13" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-12.png" /></li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Inicia sesion con el nuevo usuario administrador y luego deshabilita la cuenta de administrador predeterminada. Esto es crucial para evitar quedarte sin acceso administrativo.</p>
+</div>
+<hr />
+<h2 id="unir-una-maquina-virtual-con-windows-10-al-dominio">Unir una Máquina Virtual con Windows 10 al Dominio</h2>
+<ol>
+<li>Primero como buena practica, hay que verificar que mi maquina virtual tenga concetividad con el server de AD, el famoso <strong><code>ping</code></strong> y que tambien resuelva el nombre de dominio</li>
+<li>Navegaremos hacia <strong>Configuracion de Red e Internet</strong>
+    <img alt="ad-14" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-13.png" /></li>
+<li>Luego iremos a <strong>Cambiar configuracion de adaptador</strong>, abriremos el adaptador <strong>ethernet</strong> e iremos al protocolo <strong>ipv4</strong></li>
+<li>Dentro de la cofiguracion del adaptador, colocaremos la direccion ip del servidor de active directory en dns predeterminado
+    <img alt="ad-15" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-14.png" /></li>
+<li>Luego iremos a <strong>Acerca de esta pc</strong> y haremos clic en <strong>Renombrar esta PC</strong>
+    <img alt="ad-16" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-15.png" /></li>
+<li>Ahora solo agregaremos el <strong>Dominio</strong> que creamos anteriormente, y opcionalmente podremos cambiar el nombre de la pc
+    <img alt="ad-17" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-16.png" /></li>
+<li>Cuando hagamos clic en <strong>ok</strong> nos va a pedir las creedenciales de un usuario con permisos para añadir computadoras a dominio, en este caso colocaremos la del usuario que creamos anteriormente, ya que tiene los permisos de administrador.
+    <img alt="ad-18" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-17.png" /></li>
+<li>Finalmente nos pedira reiniciar la computadora, y ya podremos logearnos dentro del dominio, si queremos corroborar si la pc se unio al dominio, iremos a al servidor, <strong>Usuarios y equipos de Active Directory</strong>, buscaremos nuestro <strong>dominio</strong> y dentro de el la carpeta <strong>equipos</strong>.
+    <img alt="ad-19" src="../../../assets/tutoriales/AD/instalacion-configuracion/ad-18.png" /></li>
+</ol>
+<hr />
+<h3 id="preguntas-frecuentes-faq">Preguntas Frecuentes (FAQ)</h3>
+<ol>
+<li>
+<p><strong>¿Puedo tener múltiples dominios en un solo bosque?</strong><br />
+   Sí, un bosque puede contener múltiples dominios, pero todos deben compartir un esquema común y una relación de confianza.</p>
+</li>
+<li>
+<p><strong>¿Qué es el catálogo global en Active Directory?</strong><br />
+   El catálogo global es una base de datos que contiene información sobre todos los objetos en el bosque, lo que facilita las búsquedas y la autenticación entre dominios.</p>
+</li>
+<li>
+<p><strong>¿Cómo puedo aplicar políticas de grupo a usuarios o equipos?</strong><br />
+   Las políticas de grupo (GPO) se pueden aplicar a Unidades Organizativas (OU) que contengan usuarios o equipos. Puedes configurar las GPO desde <strong>Administración de directivas de grupo</strong>. Lo vamos a ver en otro tutorial.</p>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2024 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.instant", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy", "content.code.lines", "content.figures", "header.autohide"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>

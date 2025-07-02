@@ -1,0 +1,2220 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Guías de hacking ético y tutoriales de ciberseguridad">
+      
+      
+        <meta name="author" content="Martin Terribile">
+      
+      
+      
+        <link rel="prev" href="../creacion-dominio/">
+      
+      
+        <link rel="next" href="../../analisis-malware/laboratorio-malware/">
+      
+      
+      <link rel="icon" href="../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Crear OU y GPO con Script de Bienvenida en AD 🖥️🔐 - The D3LT4 Protocol</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#crear-ou-y-gpo-con-script-de-bienvenida-en-ad" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-header__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5 5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The D3LT4 Protocol
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Crear OU y GPO con Script de Bienvenida en AD 🖥️🔐
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to light mode."  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode." for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="blue"  aria-label="Switch to dark mode."  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode." for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../maquinas-vulnerables/" class="md-tabs__link">
+          
+  
+  
+  Máquinas Vulnerables
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../cyberdefenders/endpoint-forensics/insider/" class="md-tabs__link">
+          
+  
+  
+  Cyberdefenders
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  Tutoriales
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../recursos/enlaces-utiles/" class="md-tabs__link">
+          
+  
+  
+  Recursos
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Acerca de
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-nav__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17a2 2 0 0 0 2-2 2 2 0 0 0-2-2 2 2 0 0 0-2 2 2 2 0 0 0 2 2m6-9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5 5 5 0 0 1 5 5v2zm-6-5a3 3 0 0 0-3 3v2h6V6a3 3 0 0 0-3-3"/></svg>
+
+    </a>
+    The D3LT4 Protocol
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Inicio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Máquinas Vulnerables
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Máquinas Vulnerables
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    DockerLabs
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            DockerLabs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Muy Fácil
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Muy Fácil
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Injection 💉
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/firsthacking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    FirstHacking 🕵️‍♀️
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Fácil
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Fácil
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/amor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Amor ❤️
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/aguademayo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Aguademayo 💧
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Cyberdefenders
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Cyberdefenders
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Endpoint Forensics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Endpoint Forensics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/insider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Insider Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/redline-stealer-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Redline Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/ramnit-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Ramnit Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/reveal-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    📂 Reveal Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Network Forensics
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Network Forensics
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/webstrike-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    🕵 Webstrike Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/poisoned-credentials-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    🕵 Poisoned Credentials Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/tomcat-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    🕵 Tomcat Takeover Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Threat Intel
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Threat Intel
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/threat-intel/iceId-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Guia de resolucion IceID Lab
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Tutoriales
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Tutoriales
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutoriales
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Active Directory
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Active Directory
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../creacion-dominio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Instalación y Configuración de Active Directory en Windows Server 🖥️🔐
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Crear OU y GPO con Script de Bienvenida en AD 🖥️🔐
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Crear OU y GPO con Script de Bienvenida en AD 🖥️🔐
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#que-es-una-unidad-organizativa-ou-y-una-politica-de-grupo-gpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      ¿Qué es una Unidad Organizativa (OU) y una Política de Grupo (GPO)?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="¿Qué es una Unidad Organizativa (OU) y una Política de Grupo (GPO)?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unidad-organizativa-ou" class="md-nav__link">
+    <span class="md-ellipsis">
+      Unidad Organizativa (OU)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#politica-de-grupo-gpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Política de Grupo (GPO)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creacion-de-una-unidad-organizativa-ou-en-active-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creación de una Unidad Organizativa (OU) en Active Directory
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creación de una Unidad Organizativa (OU) en Active Directory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-abrir-usuarios-y-equipos-de-active-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Abrir Usuarios y Equipos de Active Directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-crear-una-nueva-ou" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Crear una Nueva OU
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creacion-de-un-grupo-de-usuarios-y-asignacion-a-la-ou" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creación de un Grupo de Usuarios y Asignación a la OU
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creación de un Grupo de Usuarios y Asignación a la OU">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-crear-un-grupo-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Crear un Grupo de Usuarios
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-agregar-usuarios-al-grupo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Agregar Usuarios al Grupo
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creacion-y-aplicacion-de-una-politica-de-grupo-gpo-con-un-script-de-bienvenida" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creación y Aplicación de una Política de Grupo (GPO) con un Script de Bienvenida
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creación y Aplicación de una Política de Grupo (GPO) con un Script de Bienvenida">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#paso-1-crear-un-script-de-bienvenida" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 1: Crear un Script de Bienvenida
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-2-crear-una-nueva-gpo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 2: Crear una Nueva GPO
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-3-configurar-la-gpo-para-ejecutar-el-script-de-bienvenida" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 3: Configurar la GPO para Ejecutar el Script de Bienvenida
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paso-4-vincular-la-gpo-al-grupo-de-usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Paso 4: Vincular la GPO al Grupo de Usuarios
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verificacion-del-funcionamiento-del-script-de-bienvenida" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verificación del Funcionamiento del Script de Bienvenida
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Verificación del Funcionamiento del Script de Bienvenida">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#preguntas-frecuentes-faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      Preguntas Frecuentes (FAQ)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Analisis Malware
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            Analisis Malware
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../analisis-malware/laboratorio-malware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Arma tu propio laboratorio para analisis de malware
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    pfSense
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            pfSense
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pfSense/primeros-pasos-pfsense/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Primeros pasos con pfSense 🧱
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../pfSense/configurar-openVpn-segura/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Configuración de OpenVPN en pfSense 📡🔑
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Docker
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            Docker
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/primeros-pasos-docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Primeros pasos con Docker
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Docker/instalacion-portainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Instalación de Portainer en un Servidor Ubuntu
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_6" id="__nav_4_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    Herramientas de Hacking
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            Herramientas de Hacking
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../herramientas-hacking/nmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Nmap
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../herramientas-hacking/wireshark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Wireshark
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Recursos
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Recursos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recursos/enlaces-utiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Enlaces Útiles
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Acerca de
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="crear-ou-y-gpo-con-script-de-bienvenida-en-ad">Crear OU y GPO con Script de Bienvenida en AD 🖥️🔐</h1>
+<p>En este artículo, te guiaré paso a paso para crear una <strong>Unidad Organizativa (OU)</strong> en <strong>Active Directory (AD)</strong>, aplicar una <strong>Política de Grupo (GPO)</strong> a un grupo de usuarios y configurar un script que se ejecute al iniciar sesión para mostrar un mensaje de bienvenida. Este tutorial es ideal para aquellos que ya tienen un dominio configurado y desean profundizar en la administración de AD.</p>
+<hr />
+<h2 id="que-es-una-unidad-organizativa-ou-y-una-politica-de-grupo-gpo">¿Qué es una Unidad Organizativa (OU) y una Política de Grupo (GPO)?</h2>
+<p><img alt="ad-banner" src="../../../assets/tutoriales/AD/instalacion-configuracion/banner-ad.png" /></p>
+<h3 id="unidad-organizativa-ou">Unidad Organizativa (OU)</h3>
+<p>Una <strong>Unidad Organizativa (OU)</strong> es un contenedor dentro de un dominio de Active Directory que se utiliza para organizar objetos como usuarios, equipos y grupos. Las OU permiten aplicar políticas de grupo de manera granular y facilitan la administración de recursos en una red.</p>
+<h3 id="politica-de-grupo-gpo">Política de Grupo (GPO)</h3>
+<p>Una <strong>Política de Grupo (GPO)</strong> es un conjunto de configuraciones que se aplican a usuarios y equipos dentro de un dominio o una OU. Las GPOs permiten automatizar tareas como la configuración de seguridad, la instalación de software y la ejecución de scripts.</p>
+<hr />
+<h2 id="creacion-de-una-unidad-organizativa-ou-en-active-directory">Creación de una Unidad Organizativa (OU) en Active Directory</h2>
+<h3 id="paso-1-abrir-usuarios-y-equipos-de-active-directory">Paso 1: Abrir Usuarios y Equipos de Active Directory</h3>
+<ol>
+<li>Inicia sesión en tu servidor de Active Directory con una cuenta de administrador.</li>
+<li>Abre <strong>Usuarios y Equipos de Active Directory</strong> desde el menú Inicio o desde el <strong>Administrador del Servidor</strong>.
+    <img alt="gpo-1" src="../../../assets/tutoriales/AD/gpo/gpo-1.png" /></li>
+</ol>
+<h3 id="paso-2-crear-una-nueva-ou">Paso 2: Crear una Nueva OU</h3>
+<ol>
+<li>En la consola de <strong>Usuarios y Equipos de Active Directory</strong>, navega hasta el dominio en el que deseas crear la OU.</li>
+<li>Clic derecho sobre el dominio y selecciona <strong>Nuevo &gt; Unidad Organizativa</strong>.
+    <img alt="gpo-2" src="../../../assets/tutoriales/AD/gpo/gpo-2.png" /></li>
+<li>Asigna un nombre a la OU (por ejemplo, <code>Delta S.A</code>) y clic en <strong>Aceptar</strong>.
+    <img alt="gpo-3" src="../../../assets/tutoriales/AD/gpo/gpo-3.png" /></li>
+</ol>
+<hr />
+<h2 id="creacion-de-un-grupo-de-usuarios-y-asignacion-a-la-ou">Creación de un Grupo de Usuarios y Asignación a la OU</h2>
+<h3 id="paso-1-crear-un-grupo-de-usuarios">Paso 1: Crear un Grupo de Usuarios</h3>
+<ol>
+<li>Dentro de la OU recién creada (<code>Delta S.A</code>), clic derecho y selecciona <strong>Nuevo &gt; Grupo</strong>.</li>
+<li>Asigna un nombre al grupo (por ejemplo, <code>Ventas</code>) y selecciona el tipo de grupo <strong>Seguridad</strong>.</li>
+<li>Clic en <strong>Aceptar</strong> para crear el grupo.
+    <img alt="gpo-4" src="../../../assets/tutoriales/AD/gpo/gpo-4.png" /></li>
+</ol>
+<details class="note">
+<summary>Diferencia entre distribucion y seguridad</summary>
+<p>Los grupos de seguridad en Active Directory se usan para administrar permisos y derechos de acceso a recursos, como carpetas compartidas e impresoras. En cambio, los grupos de distribución solo sirven para enviar correos electrónicos a múltiples usuarios y no pueden asignar permisos.</p>
+</details>
+<h3 id="paso-2-agregar-usuarios-al-grupo">Paso 2: Agregar Usuarios al Grupo</h3>
+<ol>
+<li>Clic derecho sobre el grupo <code>Ventas</code> y selecciona <strong>Propiedades</strong>.</li>
+<li>Anda a la pestaña <strong>Miembros</strong> y clic en <strong>Agregar</strong>.</li>
+<li>Busca y selecciona los usuarios que deseas agregar al grupo, luego haz clic en <strong>Aceptar</strong>.
+    <img alt="gpo-5" src="../../../assets/tutoriales/AD/gpo/gpo-5.png" /></li>
+</ol>
+<hr />
+<h2 id="creacion-y-aplicacion-de-una-politica-de-grupo-gpo-con-un-script-de-bienvenida">Creación y Aplicación de una Política de Grupo (GPO) con un Script de Bienvenida</h2>
+<h3 id="paso-1-crear-un-script-de-bienvenida">Paso 1: Crear un Script de Bienvenida</h3>
+<ol>
+<li>Abri el <strong>Bloc de notas</strong> o cualquier editor de texto.</li>
+<li>
+<p>Escribe el siguiente código para mostrar un mensaje de bienvenida:</p>
+<div class="language-batch highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">@</span><span class="k">echo</span> off
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1">REM Script batch para dar la bienvenida a los usuarios al iniciar sesión en el dominio</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="k">set</span> <span class="nv">titulo</span><span class="p">=</span>¡Bienvenido a Active Directory!
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">set</span> <span class="nv">mensaje</span><span class="p">=</span>Hola <span class="nv">%USERNAME%</span>, nos alegra verte en el dominio.
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">set</span> <span class="nv">dominio</span><span class="p">=</span><span class="nv">%USERDOMAIN%</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">title</span> <span class="nv">%titulo%</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">color</span> 0A
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">cls</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">echo</span> ==================================================
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">echo</span>                BIENVENIDO A <span class="nv">%dominio%</span>              
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">echo</span> ==================================================
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="k">echo</span>.
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="k">echo</span>  Hola <span class="nv">%USERNAME%</span>  
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="k">echo</span>  Esperamos que tengas un gran día en el dominio <span class="nv">%dominio%</span>.
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="k">echo</span>.
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="k">echo</span> ==================================================
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="k">echo</span>.
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="k">echo</span> Presiona cualquier tecla para continuar...
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="k">pause</span> <span class="p">&gt;</span>nul
+</span></code></pre></div>
+</li>
+</ol>
+<p>Explicación del script</p>
+<ul>
+<li><strong><code>@echo off</code></strong>: Desactiva la visualización de los comandos mientras se ejecuta el script</li>
+<li><strong><code>REM</code></strong>: Permite agregar comentarios en el script que no se ejecutarán</li>
+<li><strong><code>set</code></strong>: Crea variables con valores que pueden ser utilizados en el script</li>
+<li><strong><code>title</code></strong>: Cambia el título de la ventana de la consola</li>
+<li><strong><code>color</code></strong>: Modifica los colores de la consola. El primer dígito (0) es el color de fondo y el segundo (A) el color del texto</li>
+<li><strong><code>cls</code></strong>: Limpia la pantalla de la consola</li>
+<li><strong><code>echo</code></strong>: Muestra texto en la pantalla</li>
+<li>
+<p><strong><code>pause &gt;nul</code></strong>: Pausa la ejecución del script hasta que se presione una tecla. El &gt;nul evita que se muestre el mensaje "Presione una tecla para continuar..."</p>
+</li>
+<li>
+<p>Guarda el archivo con la extensión <code>.bat</code> (por ejemplo, <code>bienvenida.bat</code>) en una ubicación accesible, como <code>C:\Scripts\</code>.</p>
+</li>
+</ul>
+<h3 id="paso-2-crear-una-nueva-gpo">Paso 2: Crear una Nueva GPO</h3>
+<ol>
+<li>Abre <strong>Administración de directivas de grupo</strong> desde el menú Inicio o desde el <strong>Administrador del Servidor</strong>.</li>
+<li>Navega hasta el dominio o la OU donde deseas aplicar la GPO.</li>
+<li>Haz clic derecho sobre la OU <code>Delta S.A</code> y selecciona <strong>Crear un GPO en este dominio y vincularlo aquí</strong>.</li>
+<li>Asigna un nombre a la GPO (por ejemplo, <code>GPO-Bienvenida</code>) y haz clic en <strong>Aceptar</strong>.
+    <img alt="gpo-6" src="../../../assets/tutoriales/AD/gpo/gpo-6.png" /></li>
+</ol>
+<h3 id="paso-3-configurar-la-gpo-para-ejecutar-el-script-de-bienvenida">Paso 3: Configurar la GPO para Ejecutar el Script de Bienvenida</h3>
+<ol>
+<li>Clic derecho sobre la GPO <code>GPO-Bienvenida</code> y selecciona <strong>Editar</strong>.</li>
+<li>En la consola de <strong>Editor de administración de directivas de grupo</strong>, navega hasta <strong>Configuración de usuario &gt; Directivas &gt; Configuración de Windows &gt; Scripts (Inicio/cierre de sesión)</strong>.
+    <img alt="gpo-7" src="../../../assets/tutoriales/AD/gpo/gpo-8.png" /></li>
+<li>Haz doble clic en <strong>Iniciar sesión</strong>.</li>
+<li>Clic en <strong>Agregar</strong> y selecciona el archivo <code>bienvenida.bat</code> que creaste anteriormente.</li>
+<li>Clic en <strong>Aceptar</strong> para guardar la configuración.
+    <img alt="gpo-8" src="../../../assets/tutoriales/AD/gpo/gpo-9.png" /></li>
+</ol>
+<h3 id="paso-4-vincular-la-gpo-al-grupo-de-usuarios">Paso 4: Vincular la GPO al Grupo de Usuarios</h3>
+<ol>
+<li>En <strong>Administración de directivas de grupo</strong>, asegúrate de que la GPO <code>GPO-Bienvenida</code> esté vinculada a la OU <code>Delta S.A.</code>.</li>
+<li>Verifica que los usuarios del grupo <code>Ventas</code> estén dentro de la OU <code>Delta S.A.</code>.
+    <img alt="gpo-9" src="../../../assets/tutoriales/AD/gpo/gpo-10.png" /></li>
+</ol>
+<hr />
+<h2 id="verificacion-del-funcionamiento-del-script-de-bienvenida">Verificación del Funcionamiento del Script de Bienvenida</h2>
+<ol>
+<li>Inicia sesión en una máquina unida al dominio con una cuenta de usuario que pertenezca al grupo <code>Ventas</code>.</li>
+<li>Al iniciar sesión, deberías ver un mensaje de bienvenida como el siguiente:
+    <img alt="gpo-10" src="../../../assets/tutoriales/AD/gpo/gpo-11.png" />
+    <img alt="gpo-11" src="../../../assets/tutoriales/AD/gpo/gpo-12.png" /></li>
+</ol>
+<hr />
+<h3 id="preguntas-frecuentes-faq">Preguntas Frecuentes (FAQ)</h3>
+<ol>
+<li>
+<p><strong>¿Puedo aplicar una GPO a múltiples OUs?</strong><br />
+   Sí, puedes vincular una GPO a múltiples OUs dentro del mismo dominio.</p>
+</li>
+<li>
+<p><strong>¿Cómo puedo verificar si una GPO se está aplicando correctamente?</strong><br />
+   Puedes usar la herramienta <strong>Resultado de directivas de grupo (GPResult)</strong> en la línea de comandos para verificar la aplicación de GPOs en un equipo o usuario específico.</p>
+</li>
+<li>
+<p><strong>¿Qué tipos de scripts puedo ejecutar con una GPO?</strong><br />
+   Puedes ejecutar scripts en <strong>VBScript</strong>, <strong>PowerShell</strong>, <strong>Batch</strong>, entre otros. Solo asegúrate de que el script sea compatible con los sistemas operativos de los clientes.</p>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2024 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.instant", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy", "content.code.lines", "content.figures", "header.autohide"], "search": "../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>
