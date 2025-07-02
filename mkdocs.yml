@@ -68,6 +68,7 @@ nav:
               - maquinas-vulnerables/dockerlabs/muyFacil/firsthacking.md
           - Fácil:
               - maquinas-vulnerables/dockerlabs/facil/amor.md
+              - maquinas-vulnerables/dockerlabs/facil/aguademayo.md
   - Cyberdefenders:
       - Endpoint Forensics:
         - cyberdefenders/endpoint-forensics/insider.md
