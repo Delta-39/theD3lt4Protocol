@@ -10,8 +10,8 @@ Las máquinas vulnerables son entornos virtuales diseñados específicamente par
 
 En esta sección, encontrarás guías para máquinas de las siguientes plataformas:
 
-1. [DockerLabs](./dockerlabs/)
-2. HackTheBox (Proximamente...)
+1. [DockerLabs](./dockerlabs/muyFacil/firsthacking.md)
+2. TryhackMe (Proximamente...)
 
 ## Cómo usar estas guías
 
