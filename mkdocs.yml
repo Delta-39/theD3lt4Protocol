@@ -80,6 +80,7 @@ nav:
         - cyberdefenders/network-forensics/webstrike-lab.md
         - cyberdefenders/network-forensics/poisoned-credentials-lab.md
         - cyberdefenders/network-forensics/tomcat-lab.md
+        - cyberdefenders/network-forensics/packet-maze.md
       - Threat Intel:
           - cyberdefenders/threat-intel/iceId-lab.md
   - Tutoriales:
