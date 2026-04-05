@@ -1,25 +1,26 @@
 site_name: "The D3LT4 Protocol"
-site_description: "Guías de hacking ético y tutoriales de ciberseguridad"
+site_description: "Ciberseguridad, Cloud e Inteligencia Artificial — Guías técnicas, labs y artículos"
 site_author: Martin Terribile
 theme:
   name: material
+  custom_dir: docs/overrides
   font:
     text: Roboto
-    code: Roboto Mono
+    code: Fira Code
   palette:
     - scheme: slate
       primary: black
-      accent: blue
+      accent: indigo
       toggle:
-        icon: material/lightbulb-outline
-        name: Switch to light mode.
+        icon: material/brightness-4
+        name: Cambiar a modo claro
 
-    - scheme: default  
-      primary: black 
-      accent: blue   
+    - scheme: default
+      primary: white
+      accent: indigo
       toggle:
-        icon: material/lightbulb
-        name: Switch to dark mode.
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
   features:
     - navigation.tabs
     - navigation.sections
@@ -38,73 +39,95 @@ theme:
   language: es
   favicon: assets/favicon.png
   icon:
-    logo: material/lock
-  extra:
-    analytics:
-      provider: Google
-      property: G-E7T6RDTQNB
-      feedback:
-        title: Was this page helpful?
-        ratings:
-          - icon: material/emoticon-happy-outline
-            name: This page was helpful
-            data: 1
-            note: >-
-              Thanks for your feedback!
-          - icon: material/emoticon-sad-outline
-            name: This page could be improved
-            data: 0
-            note: >- 
-              Thanks for your feedback! Help us improve this page by
-              using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+    logo: material/shield-lock
+
+extra_css:
+  - assets/css/custom.css
+
+extra:
+  analytics:
+    provider: Google
+    property: G-E7T6RDTQNB
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/emoticon-happy-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/emoticon-sad-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for your feedback! Help us improve this page by
+            using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Delta-39
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/juan-martin-terribile-giles-90a4b1229/
+
+plugins:
+  - search
+  - tags
 
 nav:
   - Inicio: index.md
-  - Máquinas Vulnerables:
-      - maquinas-vulnerables/index.md
-      - DockerLabs:
-          - Muy Fácil:
-              - maquinas-vulnerables/dockerlabs/muyFacil/injection.md
-              - maquinas-vulnerables/dockerlabs/muyFacil/firsthacking.md
-          - Fácil:
-              - maquinas-vulnerables/dockerlabs/facil/amor.md
-              - maquinas-vulnerables/dockerlabs/facil/aguademayo.md
-              - maquinas-vulnerables/dockerlabs/facil/anonymousPingu.md
-              - maquinas-vulnerables/dockerlabs/facil/pequeñas_mentirosas.md
-              - maquinas-vulnerables/dockerlabs/facil/psycho.md
-  - Cyberdefenders:
-      - Endpoint Forensics:
-        - cyberdefenders/endpoint-forensics/insider.md
-        - cyberdefenders/endpoint-forensics/redline-stealer-lab.md
-        - cyberdefenders/endpoint-forensics/ramnit-lab.md
-        - cyberdefenders/endpoint-forensics/reveal-lab.md
-      - Network Forensics:
-        - cyberdefenders/network-forensics/webstrike-lab.md
-        - cyberdefenders/network-forensics/poisoned-credentials-lab.md
-        - cyberdefenders/network-forensics/tomcat-lab.md
-        - cyberdefenders/network-forensics/packet-maze.md
-      - Threat Intel:
-          - cyberdefenders/threat-intel/iceId-lab.md
-  - Tutoriales:
-      - tutoriales/index.md
-      - Active Directory:
-        - tutoriales/active-directory/creacion-dominio.md
-        - tutoriales/active-directory/creacion-gpo.md
-      - Analisis Malware:
-          - tutoriales/analisis-malware/laboratorio-malware.md
-      - pfSense:
-          - tutoriales/pfSense/primeros-pasos-pfsense.md
-          - tutoriales/pfSense/configurar-openVpn-segura.md
-      - Docker:
-          - tutoriales/Docker/primeros-pasos-docker.md
-          - tutoriales/Docker/instalacion-portainer.md
-      - Herramientas de Hacking:
-          - tutoriales/herramientas-hacking/nmap.md
-          - tutoriales/herramientas-hacking/wireshark.md
-  - Recursos:
-      - recursos/enlaces-utiles.md
-  #   - recursos/glosario.md
-  #   - recursos/bibliografia.md
+
+  - Offensive Security:
+    - maquinas-vulnerables/index.md
+    - DockerLabs:
+      - Muy Fácil:
+        - maquinas-vulnerables/dockerlabs/muyFacil/injection.md
+        - maquinas-vulnerables/dockerlabs/muyFacil/firsthacking.md
+      - Fácil:
+        - maquinas-vulnerables/dockerlabs/facil/amor.md
+        - maquinas-vulnerables/dockerlabs/facil/aguademayo.md
+        - maquinas-vulnerables/dockerlabs/facil/anonymousPingu.md
+        - maquinas-vulnerables/dockerlabs/facil/pequeñas_mentirosas.md
+        - maquinas-vulnerables/dockerlabs/facil/psycho.md
+    - Herramientas:
+      - tutoriales/herramientas-hacking/nmap.md
+      - tutoriales/herramientas-hacking/wireshark.md
+
+  - Blue Team & DFIR:
+    - cyberdefenders/index.md
+    - Endpoint Forensics:
+      - cyberdefenders/endpoint-forensics/insider.md
+      - cyberdefenders/endpoint-forensics/redline-stealer-lab.md
+      - cyberdefenders/endpoint-forensics/ramnit-lab.md
+      - cyberdefenders/endpoint-forensics/reveal-lab.md
+    - Network Forensics:
+      - cyberdefenders/network-forensics/webstrike-lab.md
+      - cyberdefenders/network-forensics/poisoned-credentials-lab.md
+      - cyberdefenders/network-forensics/tomcat-lab.md
+      - cyberdefenders/network-forensics/packet-maze.md
+    - Threat Intel:
+      - cyberdefenders/threat-intel/iceId-lab.md
+    - Análisis de Malware:
+      - tutoriales/analisis-malware/laboratorio-malware.md
+
+  - Cloud & DevOps:
+    - cloud-devops/index.md
+    - Contenedores:
+      - tutoriales/Docker/primeros-pasos-docker.md
+      - tutoriales/Docker/instalacion-portainer.md
+    - Redes & Firewalls:
+      - tutoriales/pfSense/primeros-pasos-pfsense.md
+      - tutoriales/pfSense/configurar-openVpn-segura.md
+    - Identity:
+      - tutoriales/active-directory/creacion-dominio.md
+      - tutoriales/active-directory/creacion-gpo.md
+
+  - AI & Security:
+    - ai-security/index.md
+    - ai-security/ai-seguridad-infra-2026.md
+
+  - Blog:
+    - blog/index.md
+
+  - Recursos: recursos/enlaces-utiles.md
   - Acerca de: about.md
 
 markdown_extensions:
@@ -125,6 +148,12 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - toc:
+      permalink: true
 
 copyright: |
-  &copy; 2024 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
+  &copy; 2026 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
