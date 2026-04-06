@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://delta-39.github.io/theD3lt4Protocol/sitemap.xml

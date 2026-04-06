@@ -1,4 +1,5 @@
 site_name: "The D3LT4 Protocol"
+site_url: "https://delta-39.github.io/theD3lt4Protocol/"
 site_description: "Ciberseguridad, Cloud e Inteligencia Artificial — Guías técnicas, labs y artículos"
 site_author: Martin Terribile
 theme:
@@ -71,6 +72,7 @@ extra:
 plugins:
   - search
   - tags
+  - meta
 
 nav:
   - Inicio: index.md
