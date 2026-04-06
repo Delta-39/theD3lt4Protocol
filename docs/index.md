@@ -76,6 +76,11 @@
   </div>
 
   <div class="recent-grid">
+    <a class="recent-item" href="ai-security/lab-supply-chain-modelos/">
+      <span class="recent-date">ABR 2026</span>
+      <span class="recent-title">Supply Chain de Modelos: C&oacute;mo un Pickle te Puede Hackear</span>
+      <span class="recent-section">AI & Security</span>
+    </a>
     <a class="recent-item" href="ai-security/ai-seguridad-infra-2026/">
       <span class="recent-date">ABR 2026</span>
       <span class="recent-title">AI y Seguridad en 2026</span>

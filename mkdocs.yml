@@ -123,6 +123,9 @@ nav:
   - AI & Security:
     - ai-security/index.md
     - ai-security/ai-seguridad-infra-2026.md
+    - Labs:
+      - ai-security/lab-supply-chain-modelos.md
+      - ai-security/lab-jailbreak-agente.md
 
   - Blog:
     - blog/index.md

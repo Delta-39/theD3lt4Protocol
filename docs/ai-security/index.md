@@ -4,6 +4,28 @@ Donde la inteligencia artificial cruza con la seguridad y la infraestructura —
 
 <div class="divider"></div>
 
+## Labs
+
+<div class="section-grid">
+
+<a class="card" href="lab-supply-chain-modelos/">
+<span class="card-icon">&#128230;</span>
+<h3>Supply Chain de Modelos</h3>
+<p>C&oacute;mo un pickle te puede hackear &mdash; payloads, detecci&oacute;n con fickling y safetensors.</p>
+<span class="card-arrow">&rarr;</span>
+</a>
+
+<a class="card" href="lab-jailbreak-agente/">
+<span class="card-icon">&#129302;</span>
+<h3>Jailbreaking un Agente AI</h3>
+<p>SQL injection, SSRF y path traversal contra un agente con tools &mdash; ataque y hardening.</p>
+<span class="card-arrow">&rarr;</span>
+</a>
+
+</div>
+
+<div class="divider"></div>
+
 ## Artículos
 
 <div class="section-grid">
