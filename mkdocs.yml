@@ -112,6 +112,9 @@ nav:
 
   - Cloud & DevOps:
     - cloud-devops/index.md
+    - AWS Labs (SAA-C03):
+      - cloud-devops/aws-labs/index.md
+      - cloud-devops/aws-labs/lab-01-vpc-ec2-nat.md
     - Contenedores:
       - tutoriales/Docker/primeros-pasos-docker.md
       - tutoriales/Docker/instalacion-portainer.md

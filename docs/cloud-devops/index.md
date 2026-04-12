@@ -50,6 +50,13 @@ Tu lado DevOps — contenedores, IaC, CI/CD, cloud providers, redes y todo lo qu
 <span class="card-arrow">&rarr;</span>
 </a>
 
+<a class="card" href="aws-labs/">
+<span class="card-icon">&#9729;&#65039;</span>
+<h3>AWS Labs (SAA-C03)</h3>
+<p>Serie de labs pr&aacute;cticos de AWS — VPC, EC2, NAT, IAM y m&aacute;s.</p>
+<span class="card-arrow">&rarr;</span>
+</a>
+
 </div>
 
 <div class="divider"></div>
