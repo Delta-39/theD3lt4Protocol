@@ -1,0 +1,4427 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Ciberseguridad, Cloud e Inteligencia Artificial — Guías técnicas, labs y artículos">
+      
+      
+        <meta name="author" content="Martin Terribile">
+      
+      
+        <link rel="canonical" href="https://delta-39.github.io/theD3lt4Protocol/cloud-devops/aws-labs/lab-01-vpc-ec2-nat/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../../tutoriales/Docker/primeros-pasos-docker/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Lab 01 — VPC + EC2 + NAT Instance: La Red Completa - The D3LT4 Protocol</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CFira+Code:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Fira Code"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/css/custom.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+  
+
+
+  
+  
+
+<script id="__analytics">function __md_analytics(){function e(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],e("js",new Date),e("config","G-E7T6RDTQNB"),document.addEventListener("DOMContentLoaded",(function(){document.forms.search&&document.forms.search.query.addEventListener("blur",(function(){this.value&&e("event","search",{search_term:this.value})}));document$.subscribe((function(){var t=document.forms.feedback;if(void 0!==t)for(var a of t.querySelectorAll("[type=submit]"))a.addEventListener("click",(function(a){a.preventDefault();var n=document.location.pathname,d=this.getAttribute("data-md-value");e("event","feedback",{page:n,data:d}),t.firstElementChild.disabled=!0;var r=t.querySelector(".md-feedback__note [data-md-value='"+d+"']");r&&(r.hidden=!1)})),t.hidden=!1})),location$.subscribe((function(t){e("config","G-E7T6RDTQNB",{page_path:t.pathname})}))}));var t=document.createElement("script");t.async=!0,t.src="https://www.googletagmanager.com/gtag/js?id=G-E7T6RDTQNB",document.getElementById("__analytics").insertAdjacentElement("afterEnd",t)}</script>
+  
+    <script>"undefined"!=typeof __md_analytics&&__md_analytics()</script>
+  
+
+    
+    
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Lab 01 — VPC + EC2 + NAT Instance: La Red Completa — The D3LT4 Protocol">
+  <meta property="og:description" content="Ciberseguridad, Cloud e Inteligencia Artificial — Guías técnicas, labs y artículos">
+  <meta property="og:image" content="https://delta-39.github.io/theD3lt4Protocol/assets/og-image.png">
+  <meta property="og:url" content="https://delta-39.github.io/theD3lt4Protocol/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lab 01 — VPC + EC2 + NAT Instance: La Red Completa — The D3LT4 Protocol">
+  <meta name="twitter:description" content="Ciberseguridad, Cloud e Inteligencia Artificial — Guías técnicas, labs y artículos">
+  <meta name="twitter:image" content="https://delta-39.github.io/theD3lt4Protocol/assets/og-image.png">
+
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lab-01-vpc-ec2-nat-instance-la-red-completa" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-header__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7m0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            The D3LT4 Protocol
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Lab 01 — VPC + EC2 + NAT Instance: La Red Completa
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Cambiar a modo claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo"  aria-label="Cambiar a modo oscuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Cambiar a modo oscuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Pestañas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Inicio
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../maquinas-vulnerables/" class="md-tabs__link">
+          
+  
+  
+  Offensive Security
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../cyberdefenders/" class="md-tabs__link">
+          
+  
+  
+  Blue Team & DFIR
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../" class="md-tabs__link">
+          
+  
+  
+  Cloud & DevOps
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../ai-security/" class="md-tabs__link">
+          
+  
+  
+  AI & Security
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../blog/" class="md-tabs__link">
+          
+  
+  
+  Blog
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../recursos/enlaces-utiles/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Recursos
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Acerca de
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="The D3LT4 Protocol" class="md-nav__button md-logo" aria-label="The D3LT4 Protocol" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5zm0 6c1.4 0 2.8 1.1 2.8 2.5V11c.6 0 1.2.6 1.2 1.3v3.5c0 .6-.6 1.2-1.3 1.2H9.2c-.6 0-1.2-.6-1.2-1.3v-3.5c0-.6.6-1.2 1.2-1.2V9.5C9.2 8.1 10.6 7 12 7m0 1.2c-.8 0-1.5.5-1.5 1.3V11h3V9.5c0-.8-.7-1.3-1.5-1.3"/></svg>
+
+    </a>
+    The D3LT4 Protocol
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Offensive Security
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Offensive Security
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Máquinas Vulnerables
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DockerLabs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    DockerLabs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_1" id="__nav_2_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Muy Fácil
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Muy Fácil
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Injection 💉
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/muyFacil/firsthacking/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FirstHacking 🕵️‍♀️
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fácil
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Fácil
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/amor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Amor ❤️
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/aguademayo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aguademayo 💧
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/anonymousPingu/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AnonymousPingu 🐧
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/peque%C3%B1as_mentirosas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pequeñas Mentirosas 🎭
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../maquinas-vulnerables/dockerlabs/facil/psycho/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Psycho 🪓
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Herramientas
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Herramientas
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/herramientas-hacking/nmap/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/herramientas-hacking/wireshark/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wireshark
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blue Team & DFIR
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blue Team & DFIR
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blue Team &amp; DFIR
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Endpoint Forensics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Endpoint Forensics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/insider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📂 Insider Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/redline-stealer-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📂 Redline Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/ramnit-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📂 Ramnit Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/endpoint-forensics/reveal-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    📂 Reveal Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network Forensics
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Network Forensics
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/webstrike-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🕵 Webstrike Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/poisoned-credentials-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🕵 Poisoned Credentials Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/tomcat-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🕵 Tomcat Takeover Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/network-forensics/packet-maze/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    🕵 Packet Maze
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Threat Intel
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Threat Intel
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../cyberdefenders/threat-intel/iceId-lab/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guia de resolucion IceID Lab
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Análisis de Malware
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Análisis de Malware
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/analisis-malware/laboratorio-malware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arma tu propio laboratorio para analisis de malware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cloud & DevOps
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Cloud & DevOps
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cloud &amp; DevOps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Labs (SAA-C03)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AWS Labs (SAA-C03)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS Solutions Architect Labs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 01 — VPC + EC2 + NAT Instance: La Red Completa
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Lab 01 — VPC + EC2 + NAT Instance: La Red Completa
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#arquitectura-final-del-lab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Arquitectura final del lab
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-1-vpc-subnets-internet-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte 1 — VPC + Subnets + Internet Gateway
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte 1 — VPC + Subnets + Internet Gateway">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-es-una-vpc-y-por-que-la-necesitamos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué es una VPC y por qué la necesitamos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#11-crear-la-vpc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.1 Crear la VPC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-son-las-subnets-y-por-que-dividimos-en-publicas-y-privadas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué son las Subnets y por qué dividimos en públicas y privadas
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#12-crear-las-4-subnets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.2 Crear las 4 subnets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-es-un-internet-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué es un Internet Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#13-internet-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.3 Internet Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-son-las-route-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué son las Route Tables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#14-route-tables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1.4 Route Tables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verificacion-parte-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verificación Parte 1
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-2-ec2-web-server-en-la-subnet-publica" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte 2 — EC2 Web Server en la Subnet Pública
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte 2 — EC2 Web Server en la Subnet Pública">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-es-ec2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Qué es EC2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#21-crear-key-pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Crear Key Pair
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-security-group-para-el-web-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Security Group para el web server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-lanzar-la-ec2-con-user-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Lanzar la EC2 con User Data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-probar-el-web-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Probar el web server
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#25-explorar-instance-metadata-imdsv2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Explorar Instance Metadata (IMDSv2)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.5 Explorar Instance Metadata (IMDSv2)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-es-la-instance-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué es la Instance Metadata?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#que-es-imdsv2-y-por-que-importa" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué es IMDSv2 y por qué importa?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verificacion-parte-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verificación Parte 2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parte-3-nat-instance-internet-para-la-subnet-privada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parte 3 — NAT Instance: Internet para la Subnet Privada
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Parte 3 — NAT Instance: Internet para la Subnet Privada">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#el-problema-que-resolvemos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El problema que resolvemos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nat-gateway-vs-nat-instance-por-que-elegimos-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NAT Gateway vs NAT Instance: por qué elegimos Instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#31-security-group-para-la-nat-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 Security Group para la NAT Instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-lanzar-la-nat-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Lanzar la NAT Instance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-deshabilitar-sourcedestination-check" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Deshabilitar Source/Destination Check
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.3 Deshabilitar Source/Destination Check">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-es-y-por-que-hay-que-deshabilitarlo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué es y por qué hay que deshabilitarlo?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-configurar-iptables-y-ip-forwarding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 Configurar iptables y IP forwarding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.4 Configurar iptables y IP forwarding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#que-es-iptables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué es iptables?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lo-que-configuramos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lo que configuramos
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-funciona-el-nat-paquete-por-paquete" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cómo funciona el NAT — paquete por paquete
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-ruta-en-la-route-table-privada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 Ruta en la Route Table privada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#36-probar-con-una-instancia-privada" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Probar con una instancia privada
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#probar-conectividad" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Probar conectividad
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bonus-monitorear-el-nat-en-vivo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bonus: Monitorear el NAT en vivo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verificacion-parte-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verificación Parte 3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limpieza" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limpieza
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resumen-de-conceptos-clave" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resumen de conceptos clave
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contenedores
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contenedores
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/Docker/primeros-pasos-docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos con Docker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/Docker/instalacion-portainer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instalación de Portainer en un Servidor Ubuntu
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Redes & Firewalls
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Redes & Firewalls
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/pfSense/primeros-pasos-pfsense/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos con pfSense 🧱
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/pfSense/configurar-openVpn-segura/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuración de OpenVPN en pfSense 📡🔑
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Identity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/active-directory/creacion-dominio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instalación y Configuración de Active Directory en Windows Server 🖥️🔐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutoriales/active-directory/creacion-gpo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crear OU y GPO con Script de Bienvenida en AD 🖥️🔐
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI & Security
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AI & Security
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ai-security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI &amp; Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ai-security/ai-seguridad-infra-2026/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI y Seguridad en 2026: el panorama para alguien que hace DevOps y Security
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labs
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Labs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ai-security/lab-supply-chain-modelos/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Supply Chain de Modelos: Cómo un Pickle te Puede Hackear
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ai-security/lab-jailbreak-agente/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jailbreaking un Agente AI: De Asistente a Amenaza
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Blog
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../blog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../recursos/enlaces-utiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recursos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acerca de
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  <nav class="md-tags" >
+    
+      
+      
+      
+      
+        <span class="md-tag">aws</span>
+      
+    
+      
+      
+      
+      
+        <span class="md-tag">ec2</span>
+      
+    
+      
+      
+      
+      
+        <span class="md-tag">nat</span>
+      
+    
+      
+      
+      
+      
+        <span class="md-tag">networking</span>
+      
+    
+      
+      
+      
+      
+        <span class="md-tag">saa-c03</span>
+      
+    
+      
+      
+      
+      
+        <span class="md-tag">vpc</span>
+      
+    
+  </nav>
+
+
+
+<h1 id="lab-01-vpc-ec2-nat-instance-la-red-completa">Lab 01 — VPC + EC2 + NAT Instance: La Red Completa<a class="headerlink" href="#lab-01-vpc-ec2-nat-instance-la-red-completa" title="Permanent link">&para;</a></h1>
+<p><strong>Lo que construimos:</strong> La base de red sobre la que se apoya todo lo demás — una VPC con subnets públicas y privadas, un web server accesible desde internet, y una NAT Instance para que las subnets privadas tengan salida a internet.</p>
+<p><strong>Servicios:</strong> VPC, Subnets, Internet Gateway, Route Tables, EC2, Security Groups, Key Pair, User Data, IMDSv2, iptables, IP Forwarding</p>
+<p><strong>Duración:</strong> ~2 horas</p>
+<p><strong>Costo:</strong> USD 0.00 (todo Free Tier)</p>
+<h2 id="arquitectura-final-del-lab">Arquitectura final del lab<a class="headerlink" href="#arquitectura-final-del-lab" title="Permanent link">&para;</a></h2>
+<!-- Insertar diagrama Excalidraw exportado como PNG -->
+<p><img alt="Arquitectura Lab 01" src="../../../assets/diagrams/lab-01-arquitectura.png" /></p>
+<hr />
+<h2 id="parte-1-vpc-subnets-internet-gateway">Parte 1 — VPC + Subnets + Internet Gateway<a class="headerlink" href="#parte-1-vpc-subnets-internet-gateway" title="Permanent link">&para;</a></h2>
+<h3 id="que-es-una-vpc-y-por-que-la-necesitamos">Qué es una VPC y por qué la necesitamos<a class="headerlink" href="#que-es-una-vpc-y-por-que-la-necesitamos" title="Permanent link">&para;</a></h3>
+<p>Cuando creás una cuenta de AWS, no tenés red propia — tenés la "default VPC" que AWS crea por vos, pero para un entorno real necesitás armar la tuya.</p>
+<p>Una <strong>VPC (Virtual Private Cloud)</strong> es tu red privada dentro de AWS. Pensala como tu propio datacenter virtual: vos decidís qué rangos de IP usa, cómo se divide en segmentos, qué tiene acceso a internet y qué no. Todo lo que deployés en AWS (EC2, RDS, Lambda con VPC, etc.) vive dentro de una VPC.</p>
+<p><strong>Conceptos clave antes de arrancar:</strong></p>
+<ul>
+<li><strong>Región:</strong> Una VPC vive dentro de una región de AWS (nosotros usamos <code>us-east-1</code>, Virginia). No puede cruzar regiones.</li>
+<li><strong>CIDR block:</strong> El rango de IPs privadas de tu VPC. Nosotros usamos <code>10.0.0.0/16</code>, que nos da 65,536 direcciones IP. Es el rango más común para labs y entornos de desarrollo.</li>
+<li><strong>DNS hostnames:</strong> Si lo activás, cada EC2 que levantes recibe un nombre DNS público (tipo <code>ec2-54-123-45-67.compute-1.amazonaws.com</code>). Lo necesitamos para poder acceder a las instancias por nombre.</li>
+</ul>
+<h3 id="11-crear-la-vpc">1.1 Crear la VPC<a class="headerlink" href="#11-crear-la-vpc" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Consola AWS</label><label for="__tabbed_1_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>VPC</strong> → <strong>Your VPCs</strong> → <strong>Create VPC</strong></li>
+<li>Seleccionar <strong>VPC only</strong> (no "VPC and more", queremos hacerlo paso a paso para entender)</li>
+<li>Name tag: <code>d3lt4-vpc</code></li>
+<li>IPv4 CIDR block: <code>10.0.0.0/16</code></li>
+<li>Click <strong>Create VPC</strong></li>
+<li>Una vez creada, seleccioná la VPC → <strong>Actions</strong> → <strong>Edit VPC settings</strong></li>
+<li>Activar <strong>Enable DNS hostnames</strong> → Save</li>
+</ol>
+<blockquote>
+<p><img alt="VPC creada" src="../../../assets/aws-labs/lab-01/01-vpc-creada.png" />
+VPC creada con el CIDR <code>10.0.0.0/16</code>.</p>
+<p><img alt="DNS hostnames" src="../../../assets/aws-labs/lab-01/01b-dns-hostnames.png" />
+DNS hostnames habilitado.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-vpc<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span>--cidr-block<span class="w"> </span><span class="m">10</span>.0.0.0/16<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=vpc,Tags=[{Key=Name,Value=d3lt4-vpc}]&#39;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>aws<span class="w"> </span>ec2<span class="w"> </span>modify-vpc-attribute<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span>--enable-dns-hostnames<span class="w"> </span><span class="s1">&#39;{&quot;Value&quot;: true}&#39;</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>aws<span class="w"> </span>ec2<span class="w"> </span>modify-vpc-attribute<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span>--enable-dns-support<span class="w"> </span><span class="s1">&#39;{&quot;Value&quot;: true}&#39;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="que-son-las-subnets-y-por-que-dividimos-en-publicas-y-privadas">Qué son las Subnets y por qué dividimos en públicas y privadas<a class="headerlink" href="#que-son-las-subnets-y-por-que-dividimos-en-publicas-y-privadas" title="Permanent link">&para;</a></h3>
+<p>Una <strong>subnet</strong> es un segmento de tu VPC. Así como en una oficina tenés la red de empleados y la red de servidores separadas, acá dividimos la VPC en subnets para separar lo que es accesible desde internet (público) de lo que no (privado).</p>
+<p><strong>¿Por qué esta separación importa?</strong></p>
+<ul>
+<li>En la <strong>subnet pública</strong> ponemos lo que necesita ser accesible desde afuera: web servers, balanceadores, bastions.</li>
+<li>En la <strong>subnet privada</strong> ponemos lo que NO debe ser accesible directamente: bases de datos, servidores de aplicación, caches. Si alguien compromete tu web server, no puede llegar directo a la base de datos.</li>
+</ul>
+<p><strong>¿Por qué 2 Availability Zones?</strong></p>
+<p>Cada AZ es un datacenter físico separado (o grupo de datacenters). Si <code>us-east-1a</code> se cae (pasa), tus recursos en <code>us-east-1b</code> siguen funcionando. Por eso creamos subnets en 2 AZs — para alta disponibilidad. Servicios como ALB y RDS te van a pedir subnets en al menos 2 AZs.</p>
+<p><strong>El plan de subnets:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>CIDR</th>
+<th>AZ</th>
+<th>Tipo</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>d3lt4-public-1a</code></td>
+<td><code>10.0.1.0/24</code> (256 IPs)</td>
+<td>us-east-1a</td>
+<td>Pública</td>
+<td>Web server, NAT Instance</td>
+</tr>
+<tr>
+<td><code>d3lt4-public-1b</code></td>
+<td><code>10.0.2.0/24</code> (256 IPs)</td>
+<td>us-east-1b</td>
+<td>Pública</td>
+<td>Disponible para HA</td>
+</tr>
+<tr>
+<td><code>d3lt4-private-1a</code></td>
+<td><code>10.0.3.0/24</code> (256 IPs)</td>
+<td>us-east-1a</td>
+<td>Privada</td>
+<td>Instancias internas, futuro RDS</td>
+</tr>
+<tr>
+<td><code>d3lt4-private-1b</code></td>
+<td><code>10.0.4.0/24</code> (256 IPs)</td>
+<td>us-east-1b</td>
+<td>Privada</td>
+<td>Disponible para HA</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">¿256 IPs pero solo 251 usables?</p>
+<p>AWS reserva 5 IPs de cada subnet: la primera (dirección de red), la segunda (router de la VPC), la tercera (DNS de AWS), la cuarta (reservada para futuro) y la última (broadcast).</p>
+</div>
+<h3 id="12-crear-las-4-subnets">1.2 Crear las 4 subnets<a class="headerlink" href="#12-crear-las-4-subnets" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Consola AWS</label><label for="__tabbed_2_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Ir a <strong>VPC</strong> → <strong>Subnets</strong> → <strong>Create subnet</strong>. Seleccioná la VPC <code>d3lt4-vpc</code> y creá las 4 subnets:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>AZ</th>
+<th>CIDR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>d3lt4-public-1a</code></td>
+<td>us-east-1a</td>
+<td><code>10.0.1.0/24</code></td>
+</tr>
+<tr>
+<td><code>d3lt4-public-1b</code></td>
+<td>us-east-1b</td>
+<td><code>10.0.2.0/24</code></td>
+</tr>
+<tr>
+<td><code>d3lt4-private-1a</code></td>
+<td>us-east-1a</td>
+<td><code>10.0.3.0/24</code></td>
+</tr>
+<tr>
+<td><code>d3lt4-private-1b</code></td>
+<td>us-east-1b</td>
+<td><code>10.0.4.0/24</code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition tip">
+<p class="admonition-title">Podés agregar las 4 en la misma pantalla</p>
+<p>Después de llenar la primera, hacé click en <strong>Add new subnet</strong> abajo para agregar las demás sin salir del formulario.</p>
+</div>
+<blockquote>
+<p><img alt="Subnets creadas" src="../../../assets/aws-labs/lab-01/02-subnets-creadas.png" />
+Las 4 subnets creadas en la tabla de Subnets, con sus CIDRs y AZs.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Públicas</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-subnet<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span>--cidr-block<span class="w"> </span><span class="m">10</span>.0.1.0/24<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>--availability-zone<span class="w"> </span>us-east-1a<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=subnet,Tags=[{Key=Name,Value=d3lt4-public-1a}]&#39;</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-subnet<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span>--cidr-block<span class="w"> </span><span class="m">10</span>.0.2.0/24<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">  </span>--availability-zone<span class="w"> </span>us-east-1b<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=subnet,Tags=[{Key=Name,Value=d3lt4-public-1b}]&#39;</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Privadas</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-subnet<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span>--cidr-block<span class="w"> </span><span class="m">10</span>.0.3.0/24<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">  </span>--availability-zone<span class="w"> </span>us-east-1a<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=subnet,Tags=[{Key=Name,Value=d3lt4-private-1a}]&#39;</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-subnet<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span>--cidr-block<span class="w"> </span><span class="m">10</span>.0.4.0/24<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">  </span>--availability-zone<span class="w"> </span>us-east-1b<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=subnet,Tags=[{Key=Name,Value=d3lt4-private-1b}]&#39;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="que-es-un-internet-gateway">Qué es un Internet Gateway<a class="headerlink" href="#que-es-un-internet-gateway" title="Permanent link">&para;</a></h3>
+<p>Hasta acá tenés una red completamente aislada. Las subnets no tienen forma de hablar con internet. El <strong>Internet Gateway (IGW)</strong> es la puerta de salida: conecta tu VPC con internet.</p>
+<p>Pero ojo — que exista el IGW no significa que todo tiene internet automáticamente. Necesitás decirle a cada subnet "para llegar a internet, usá el IGW". Eso se hace con las Route Tables.</p>
+<p>Una analogía: el IGW es la puerta del edificio. La Route Table es el cartel que dice "para salir a la calle, andá a la puerta".</p>
+<h3 id="13-internet-gateway">1.3 Internet Gateway<a class="headerlink" href="#13-internet-gateway" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Consola AWS</label><label for="__tabbed_3_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>VPC</strong> → <strong>Internet Gateways</strong> → <strong>Create internet gateway</strong></li>
+<li>Name tag: <code>d3lt4-igw</code></li>
+<li>Click <strong>Create internet gateway</strong></li>
+<li>En la pantalla del IGW recién creado, click <strong>Actions</strong> → <strong>Attach to VPC</strong></li>
+<li>Seleccionar <code>d3lt4-vpc</code> → <strong>Attach internet gateway</strong></li>
+</ol>
+<blockquote>
+<p><img alt="IGW attached" src="../../../assets/aws-labs/lab-01/03-igw-attached.png" />
+Internet Gateway en estado <code>Attached</code> a la VPC.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-internet-gateway<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=internet-gateway,Tags=[{Key=Name,Value=d3lt4-igw}]&#39;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>aws<span class="w"> </span>ec2<span class="w"> </span>attach-internet-gateway<span class="w"> </span>--internet-gateway-id<span class="w"> </span><span class="nv">$IGW_ID</span><span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="que-son-las-route-tables">Qué son las Route Tables<a class="headerlink" href="#que-son-las-route-tables" title="Permanent link">&para;</a></h3>
+<p>Una <strong>Route Table</strong> es una tabla de enrutamiento — le dice al tráfico "para llegar a este destino, andá por acá". Cada subnet tiene asociada una Route Table.</p>
+<p><strong>¿Qué hace que una subnet sea "pública"?</strong> Una sola cosa: que su Route Table tenga una ruta <code>0.0.0.0/0 → Internet Gateway</code>. <code>0.0.0.0/0</code> significa "cualquier destino que no sea la VPC". Entonces: "para todo lo que no sea tráfico interno, mandalo al IGW (internet)".</p>
+<p>La subnet privada, en cambio, NO tiene esa ruta. Su tráfico no tiene forma de salir a internet (todavía — eso lo resolvemos en la Parte 3 con la NAT Instance).</p>
+<p><strong>También habilitamos auto-assign public IP</strong> en las subnets públicas. Esto hace que cada EC2 que lancemos ahí reciba automáticamente una IP pública. Sin esto, la EC2 tendría ruta al IGW pero no tendría IP pública para que internet le responda — como tener la puerta abierta pero sin dirección postal.</p>
+<h3 id="14-route-tables">1.4 Route Tables<a class="headerlink" href="#14-route-tables" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">Consola AWS</label><label for="__tabbed_4_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><strong>Route Table pública:</strong></p>
+<ol>
+<li>Ir a <strong>VPC</strong> → <strong>Route Tables</strong> → <strong>Create route table</strong></li>
+<li>Name: <code>d3lt4-public-rt</code>, VPC: <code>d3lt4-vpc</code> → <strong>Create</strong></li>
+<li>Seleccionar la route table → pestaña <strong>Routes</strong> → <strong>Edit routes</strong> → <strong>Add route</strong><ul>
+<li>Destination: <code>0.0.0.0/0</code></li>
+<li>Target: <strong>Internet Gateway</strong> → seleccionar <code>d3lt4-igw</code></li>
+<li><strong>Save changes</strong></li>
+</ul>
+</li>
+<li>Pestaña <strong>Subnet associations</strong> → <strong>Edit subnet associations</strong><ul>
+<li>Seleccionar <code>d3lt4-public-1a</code> y <code>d3lt4-public-1b</code> → <strong>Save associations</strong></li>
+</ul>
+</li>
+</ol>
+<p><strong>Habilitar auto-assign IP pública en subnets públicas:</strong></p>
+<ol>
+<li>Ir a <strong>VPC</strong> → <strong>Subnets</strong> → seleccionar <code>d3lt4-public-1a</code></li>
+<li><strong>Actions</strong> → <strong>Edit subnet settings</strong> → activar <strong>Enable auto-assign public IPv4 address</strong> → <strong>Save</strong></li>
+<li>Repetir para <code>d3lt4-public-1b</code></li>
+</ol>
+<p><strong>Route Table privada:</strong></p>
+<ol>
+<li><strong>Create route table</strong> → Name: <code>d3lt4-private-rt</code>, VPC: <code>d3lt4-vpc</code> → <strong>Create</strong></li>
+<li>Pestaña <strong>Subnet associations</strong> → <strong>Edit subnet associations</strong><ul>
+<li>Seleccionar <code>d3lt4-private-1a</code> y <code>d3lt4-private-1b</code> → <strong>Save associations</strong></li>
+</ul>
+</li>
+<li><strong>No agregar ruta a internet todavía</strong> — eso lo hacemos en la Parte 3 con la NAT Instance.</li>
+</ol>
+<blockquote>
+<p><img alt="Route table pública" src="../../../assets/aws-labs/lab-01/04-public-rt.png" />
+Route table pública con la ruta <code>0.0.0.0/0 → igw-xxx</code> y las 2 subnets asociadas.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Route table pública</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-route-table<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=route-table,Tags=[{Key=Name,Value=d3lt4-public-rt}]&#39;</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-route<span class="w"> </span>--route-table-id<span class="w"> </span><span class="nv">$PUBLIC_RT</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span>--destination-cidr-block<span class="w"> </span><span class="m">0</span>.0.0.0/0<span class="w"> </span>--gateway-id<span class="w"> </span><span class="nv">$IGW_ID</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>aws<span class="w"> </span>ec2<span class="w"> </span>associate-route-table<span class="w"> </span>--route-table-id<span class="w"> </span><span class="nv">$PUBLIC_RT</span><span class="w"> </span>--subnet-id<span class="w"> </span><span class="nv">$PUB_SUBNET_A</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>aws<span class="w"> </span>ec2<span class="w"> </span>associate-route-table<span class="w"> </span>--route-table-id<span class="w"> </span><span class="nv">$PUBLIC_RT</span><span class="w"> </span>--subnet-id<span class="w"> </span><span class="nv">$PUB_SUBNET_B</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># Auto-assign IP pública</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>aws<span class="w"> </span>ec2<span class="w"> </span>modify-subnet-attribute<span class="w"> </span>--subnet-id<span class="w"> </span><span class="nv">$PUB_SUBNET_A</span><span class="w"> </span>--map-public-ip-on-launch
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>aws<span class="w"> </span>ec2<span class="w"> </span>modify-subnet-attribute<span class="w"> </span>--subnet-id<span class="w"> </span><span class="nv">$PUB_SUBNET_B</span><span class="w"> </span>--map-public-ip-on-launch
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1"># Route table privada (sin ruta a internet por ahora)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-route-table<span class="w"> </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=route-table,Tags=[{Key=Name,Value=d3lt4-private-rt}]&#39;</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>aws<span class="w"> </span>ec2<span class="w"> </span>associate-route-table<span class="w"> </span>--route-table-id<span class="w"> </span><span class="nv">$PRIVATE_RT</span><span class="w"> </span>--subnet-id<span class="w"> </span><span class="nv">$PRIV_SUBNET_A</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>aws<span class="w"> </span>ec2<span class="w"> </span>associate-route-table<span class="w"> </span>--route-table-id<span class="w"> </span><span class="nv">$PRIVATE_RT</span><span class="w"> </span>--subnet-id<span class="w"> </span><span class="nv">$PRIV_SUBNET_B</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="verificacion-parte-1">Verificación Parte 1<a class="headerlink" href="#verificacion-parte-1" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Consola AWS</label><label for="__tabbed_5_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>Ir a <strong>VPC</strong> → <strong>Subnets</strong> → filtrar por VPC <code>d3lt4-vpc</code>. Deberías ver las 4 subnets con sus CIDRs y AZs.</p>
+<p>Verificá también:</p>
+<ul>
+<li><strong>Route Tables:</strong> que <code>d3lt4-public-rt</code> tenga la ruta <code>0.0.0.0/0 → igw-xxx</code> y las 2 subnets públicas asociadas</li>
+<li><strong>Route Tables:</strong> que <code>d3lt4-private-rt</code> tenga solo la ruta local (<code>10.0.0.0/16 → local</code>) y las 2 subnets privadas asociadas</li>
+<li><strong>Internet Gateway:</strong> que <code>d3lt4-igw</code> esté en estado <code>Attached</code></li>
+</ul>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>describe-subnets<span class="w"> </span>--filters<span class="w"> </span><span class="s2">&quot;Name=vpc-id,Values=</span><span class="nv">$VPC_ID</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span>--query<span class="w"> </span><span class="s1">&#39;Subnets[].[Tags[?Key==`Name`].Value|[0],CidrBlock,AvailabilityZone]&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span>--output<span class="w"> </span>table
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<hr />
+<h2 id="parte-2-ec2-web-server-en-la-subnet-publica">Parte 2 — EC2 Web Server en la Subnet Pública<a class="headerlink" href="#parte-2-ec2-web-server-en-la-subnet-publica" title="Permanent link">&para;</a></h2>
+<h3 id="que-es-ec2">Qué es EC2<a class="headerlink" href="#que-es-ec2" title="Permanent link">&para;</a></h3>
+<p><strong>EC2 (Elastic Compute Cloud)</strong> es el servicio de máquinas virtuales de AWS. Cada instancia EC2 es un servidor virtual que corre en el hardware de AWS. Vos elegís el sistema operativo (AMI), la potencia de la máquina (instance type) y en qué subnet vive.</p>
+<p><strong>Conceptos que vamos a usar:</strong></p>
+<ul>
+<li><strong>AMI (Amazon Machine Image):</strong> La imagen del sistema operativo. Nosotros usamos Amazon Linux 2, que es un Linux basado en RHEL optimizado para AWS. Es Free Tier y viene con las herramientas de AWS preinstaladas.</li>
+<li><strong>Instance Type:</strong> Define CPU, RAM y capacidad de red. <code>t2.micro</code> tiene 1 vCPU y 1 GB RAM — es lo que cubre Free Tier. La "t" significa "burstable": normalmente usa poca CPU, pero puede "explotar" por ráfagas cortas usando créditos.</li>
+<li><strong>Key Pair:</strong> Un par de claves SSH (pública + privada). AWS guarda la pública dentro de la EC2 y vos te quedás con la privada (el <code>.pem</code>). Es la única forma de conectarte por SSH.</li>
+<li><strong>Security Group:</strong> Es un firewall virtual que controla qué tráfico puede entrar y salir de la instancia. Funciona a nivel de instancia (no de subnet). Por defecto, bloquea todo el tráfico de entrada y permite todo el de salida.</li>
+<li><strong>User Data:</strong> Un script que se ejecuta automáticamente cuando la instancia arranca por primera vez. Corre como root. Sirve para instalar software, configurar servicios, etc., sin tener que conectarte manualmente.</li>
+</ul>
+<h3 id="21-crear-key-pair">2.1 Crear Key Pair<a class="headerlink" href="#21-crear-key-pair" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Consola AWS</label><label for="__tabbed_6_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>EC2</strong> → <strong>Key Pairs</strong> (en el menú lateral, sección Network &amp; Security)</li>
+<li><strong>Create key pair</strong></li>
+<li>Name: <code>d3lt4-key</code></li>
+<li>Type: <strong>RSA</strong></li>
+<li>Private key file format: <strong>.pem</strong></li>
+<li>Click <strong>Create key pair</strong> — se descarga automáticamente el archivo <code>.pem</code></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Guardá bien el .pem</p>
+<p>Es la <strong>única vez</strong> que podés descargarlo. Si lo perdés, no podés acceder por SSH a las instancias que lo usen. Guardalo en un lugar seguro y hacé <code>chmod 400 d3lt4-key.pem</code> desde tu terminal para que solo vos puedas leerlo.</p>
+</div>
+<blockquote>
+<p><img alt="Key pair creado" src="../../../assets/aws-labs/lab-01/05-key-pair.png" />
+Key pair creado en la lista de Key Pairs.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-key-pair<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--key-name<span class="w"> </span>d3lt4-key<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--query<span class="w"> </span><span class="s1">&#39;KeyMaterial&#39;</span><span class="w"> </span>--output<span class="w"> </span>text<span class="w"> </span>&gt;<span class="w"> </span>d3lt4-key.pem
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>chmod<span class="w"> </span><span class="m">400</span><span class="w"> </span>d3lt4-key.pem
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="22-security-group-para-el-web-server">2.2 Security Group para el web server<a class="headerlink" href="#22-security-group-para-el-web-server" title="Permanent link">&para;</a></h3>
+<p>El Security Group es el firewall de la instancia. Acá definimos qué tráfico puede entrar:</p>
+<ul>
+<li><strong>SSH (puerto 22)</strong> solo desde tu IP — para que puedas conectarte a administrar. Nunca abras SSH a <code>0.0.0.0/0</code> en un entorno real, cualquiera podría intentar conectarse.</li>
+<li><strong>HTTP (puerto 80)</strong> desde cualquier IP — porque es un web server público, queremos que cualquiera pueda verlo.</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Consola AWS</label><label for="__tabbed_7_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>EC2</strong> → <strong>Security Groups</strong> → <strong>Create security group</strong></li>
+<li>Name: <code>d3lt4-web-sg</code></li>
+<li>Description: <code>Web server - HTTP + SSH</code></li>
+<li>VPC: <code>d3lt4-vpc</code></li>
+<li>
+<p><strong>Inbound rules</strong> → <strong>Add rule</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Port</th>
+<th>Source</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSH</td>
+<td>22</td>
+<td><strong>My IP</strong> (se autocompleta con tu IP)</td>
+<td>SSH desde mi IP</td>
+</tr>
+<tr>
+<td>HTTP</td>
+<td>80</td>
+<td><code>0.0.0.0/0</code> (Anywhere IPv4)</td>
+<td>HTTP público</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Create security group</strong></p>
+</li>
+</ol>
+<blockquote>
+<p><img alt="SG web server" src="../../../assets/aws-labs/lab-01/06-web-sg.png" />
+Security Group con las 2 reglas de inbound (SSH + HTTP).</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-security-group<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span>--group-name<span class="w"> </span>d3lt4-web-sg<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">  </span>--description<span class="w"> </span><span class="s2">&quot;Web server - HTTP + SSH&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="nv">MY_IP</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>ifconfig.me<span class="k">)</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>aws<span class="w"> </span>ec2<span class="w"> </span>authorize-security-group-ingress<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">  </span>--group-id<span class="w"> </span><span class="nv">$WEB_SG</span><span class="w"> </span>--protocol<span class="w"> </span>tcp<span class="w"> </span>--port<span class="w"> </span><span class="m">22</span><span class="w"> </span>--cidr<span class="w"> </span><span class="nv">$MY_IP</span>/32
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>aws<span class="w"> </span>ec2<span class="w"> </span>authorize-security-group-ingress<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span>--group-id<span class="w"> </span><span class="nv">$WEB_SG</span><span class="w"> </span>--protocol<span class="w"> </span>tcp<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span><span class="w"> </span>--cidr<span class="w"> </span><span class="m">0</span>.0.0.0/0
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="23-lanzar-la-ec2-con-user-data">2.3 Lanzar la EC2 con User Data<a class="headerlink" href="#23-lanzar-la-ec2-con-user-data" title="Permanent link">&para;</a></h3>
+<p>Vamos a lanzar una EC2 con un script de User Data que:</p>
+<ol>
+<li>Instala Apache (el web server)</li>
+<li>Consulta la <strong>metadata de la instancia</strong> usando IMDSv2</li>
+<li>Genera una página HTML con esa información</li>
+</ol>
+<p><strong>¿Qué es el User Data?</strong> Es un script bash que AWS ejecuta automáticamente como <code>root</code> la primera vez que la instancia arranca. Es la forma de automatizar la configuración inicial sin tener que conectarte por SSH y hacer todo a mano.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="8:2"><input checked="checked" id="__tabbed_8_1" name="__tabbed_8" type="radio" /><input id="__tabbed_8_2" name="__tabbed_8" type="radio" /><div class="tabbed-labels"><label for="__tabbed_8_1">Consola AWS</label><label for="__tabbed_8_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>EC2</strong> → <strong>Instances</strong> → <strong>Launch instances</strong></li>
+<li>Name: <code>d3lt4-web-01</code></li>
+<li><strong>AMI:</strong> Amazon Linux 2 (debería ser la primera opción, Free tier eligible)</li>
+<li><strong>Instance type:</strong> <code>t2.micro</code> (Free tier eligible)</li>
+<li><strong>Key pair:</strong> <code>d3lt4-key</code></li>
+<li><strong>Network settings</strong> → <strong>Edit</strong>:<ul>
+<li>VPC: <code>d3lt4-vpc</code></li>
+<li>Subnet: <code>d3lt4-public-1a</code></li>
+<li>Auto-assign public IP: <strong>Enable</strong></li>
+<li>Select existing security group: <code>d3lt4-web-sg</code></li>
+</ul>
+</li>
+<li><strong>Advanced details</strong> → Scroll hasta el final donde dice <strong>User data</strong> y pegar este script:</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="ch">#!/bin/bash</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>yum<span class="w"> </span>update<span class="w"> </span>-y
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>httpd<span class="w"> </span>stress
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>systemctl<span class="w"> </span>start<span class="w"> </span>httpd
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>httpd
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span><span class="s2">&quot;http://169.254.169.254/latest/api/token&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token-ttl-seconds: 21600&quot;</span><span class="k">)</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="nv">INSTANCE_ID</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="w">  </span>http://169.254.169.254/latest/meta-data/instance-id<span class="k">)</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nv">AZ</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a><span class="w">  </span>http://169.254.169.254/latest/meta-data/placement/availability-zone<span class="k">)</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="nv">LOCAL_IP</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="w">  </span>http://169.254.169.254/latest/meta-data/local-ipv4<span class="k">)</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>cat<span class="w"> </span><span class="s">&lt;&lt; HTML &gt; /var/www/html/index.html</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="s">&lt;!DOCTYPE html&gt;</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="s">&lt;html&gt;</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="s">&lt;head&gt;&lt;title&gt;D3LT4 Protocol&lt;/title&gt;</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="s">&lt;style&gt;</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="s">  body { background:#0d1117; color:#c9d1d9; font-family:monospace; padding:40px; }</span>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="s">  h1 { color:#58a6ff; }</span>
+</span><span id="__span-7-24"><a id="__codelineno-7-24" name="__codelineno-7-24" href="#__codelineno-7-24"></a><span class="s">  .info { background:#161b22; border:1px solid #30363d; padding:20px; border-radius:8px; }</span>
+</span><span id="__span-7-25"><a id="__codelineno-7-25" name="__codelineno-7-25" href="#__codelineno-7-25"></a><span class="s">  .label { color:#8b949e; }</span>
+</span><span id="__span-7-26"><a id="__codelineno-7-26" name="__codelineno-7-26" href="#__codelineno-7-26"></a><span class="s">  .value { color:#f0883e; }</span>
+</span><span id="__span-7-27"><a id="__codelineno-7-27" name="__codelineno-7-27" href="#__codelineno-7-27"></a><span class="s">&lt;/style&gt;&lt;/head&gt;</span>
+</span><span id="__span-7-28"><a id="__codelineno-7-28" name="__codelineno-7-28" href="#__codelineno-7-28"></a><span class="s">&lt;body&gt;</span>
+</span><span id="__span-7-29"><a id="__codelineno-7-29" name="__codelineno-7-29" href="#__codelineno-7-29"></a><span class="s">  &lt;h1&gt;The D3LT4 Protocol — AWS Lab 01&lt;/h1&gt;</span>
+</span><span id="__span-7-30"><a id="__codelineno-7-30" name="__codelineno-7-30" href="#__codelineno-7-30"></a><span class="s">  &lt;div class=&quot;info&quot;&gt;</span>
+</span><span id="__span-7-31"><a id="__codelineno-7-31" name="__codelineno-7-31" href="#__codelineno-7-31"></a><span class="s">    &lt;p&gt;&lt;span class=&quot;label&quot;&gt;Instance ID:&lt;/span&gt; &lt;span class=&quot;value&quot;&gt;$INSTANCE_ID&lt;/span&gt;&lt;/p&gt;</span>
+</span><span id="__span-7-32"><a id="__codelineno-7-32" name="__codelineno-7-32" href="#__codelineno-7-32"></a><span class="s">    &lt;p&gt;&lt;span class=&quot;label&quot;&gt;AZ:&lt;/span&gt; &lt;span class=&quot;value&quot;&gt;$AZ&lt;/span&gt;&lt;/p&gt;</span>
+</span><span id="__span-7-33"><a id="__codelineno-7-33" name="__codelineno-7-33" href="#__codelineno-7-33"></a><span class="s">    &lt;p&gt;&lt;span class=&quot;label&quot;&gt;Private IP:&lt;/span&gt; &lt;span class=&quot;value&quot;&gt;$LOCAL_IP&lt;/span&gt;&lt;/p&gt;</span>
+</span><span id="__span-7-34"><a id="__codelineno-7-34" name="__codelineno-7-34" href="#__codelineno-7-34"></a><span class="s">  &lt;/div&gt;</span>
+</span><span id="__span-7-35"><a id="__codelineno-7-35" name="__codelineno-7-35" href="#__codelineno-7-35"></a><span class="s">&lt;/body&gt;</span>
+</span><span id="__span-7-36"><a id="__codelineno-7-36" name="__codelineno-7-36" href="#__codelineno-7-36"></a><span class="s">&lt;/html&gt;</span>
+</span><span id="__span-7-37"><a id="__codelineno-7-37" name="__codelineno-7-37" href="#__codelineno-7-37"></a><span class="s">HTML</span>
+</span></code></pre></div>
+<ol>
+<li>Click <strong>Launch instance</strong></li>
+<li>Esperá ~2 minutos a que el estado pase a <strong>Running</strong> y el status check diga <strong>2/2 checks passed</strong></li>
+</ol>
+<blockquote>
+<p><img alt="EC2 web server launch" src="../../../assets/aws-labs/lab-01/07-web-ec2-running.png" />
+Network settings del launch: VPC <code>d3lt4-vpc</code>, subnet <code>d3lt4-public-1a</code>, auto-assign IP habilitado, SG <code>d3lt4-web-sg</code>.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>run-instances<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span>--image-id<span class="w"> </span>ami-0c02fb55956c7d316<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span>--instance-type<span class="w"> </span>t2.micro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span>--subnet-id<span class="w"> </span><span class="nv">$PUB_SUBNET_A</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span>--security-group-ids<span class="w"> </span><span class="nv">$WEB_SG</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="w">  </span>--key-name<span class="w"> </span><span class="nv">$KEY_PAIR</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">  </span>--user-data<span class="w"> </span>file://web-server-setup.sh<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=instance,Tags=[{Key=Name,Value=d3lt4-web-01}]&#39;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="24-probar-el-web-server">2.4 Probar el web server<a class="headerlink" href="#24-probar-el-web-server" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Copiá la <strong>Public IPv4 address</strong> de la instancia desde la consola de EC2</li>
+<li>Abrí un browser y entrá a <code>http://&lt;IP_PUBLICA&gt;</code></li>
+<li>Deberías ver la página D3LT4 con Instance ID, AZ y Private IP</li>
+</ol>
+<blockquote>
+<p><img alt="Página web D3LT4" src="../../../assets/aws-labs/lab-01/08-web-browser.png" />
+La página web D3LT4 en el browser mostrando la metadata de la instancia.</p>
+</blockquote>
+<h3 id="25-explorar-instance-metadata-imdsv2">2.5 Explorar Instance Metadata (IMDSv2)<a class="headerlink" href="#25-explorar-instance-metadata-imdsv2" title="Permanent link">&para;</a></h3>
+<h4 id="que-es-la-instance-metadata">¿Qué es la Instance Metadata?<a class="headerlink" href="#que-es-la-instance-metadata" title="Permanent link">&para;</a></h4>
+<p>Cada EC2 tiene acceso a un servicio interno en la IP <code>169.254.169.254</code> que le da información sobre sí misma: su ID, su AZ, su IP, el Security Group que tiene, el User Data que se ejecutó, etc. Esto lo usa mucho el software que corre dentro de la instancia para auto-configurarse.</p>
+<h4 id="que-es-imdsv2-y-por-que-importa">¿Qué es IMDSv2 y por qué importa?<a class="headerlink" href="#que-es-imdsv2-y-por-que-importa" title="Permanent link">&para;</a></h4>
+<p>IMDS = <strong>Instance Metadata Service</strong>. Hay dos versiones:</p>
+<ul>
+<li><strong>IMDSv1 (viejo):</strong> Hacés un <code>curl</code> directo a <code>169.254.169.254</code> y te devuelve la data. El problema: si un atacante logra un SSRF (Server-Side Request Forgery) en tu aplicación, puede hacer ese mismo curl y robar las credenciales del IAM Role de la instancia. Esto fue exactamente lo que pasó en el <a href="https://en.wikipedia.org/wiki/2019_Capital_One_data_breach">breach de Capital One en 2019</a>.</li>
+<li><strong>IMDSv2 (nuevo y más seguro):</strong> Primero tenés que pedir un <strong>token</strong> con un PUT, y después usar ese token en cada request. Un SSRF típico no puede hacer el PUT inicial, así que no puede robar la metadata. AWS recomienda siempre usar v2.</li>
+</ul>
+<p>Conectate por SSH a la instancia:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>ssh<span class="w"> </span>-i<span class="w"> </span>d3lt4-key.pem<span class="w"> </span>ec2-user@&lt;IP_PUBLICA&gt;
+</span></code></pre></div>
+<blockquote>
+<p><img alt="SSH al web server" src="../../../assets/aws-labs/lab-01/11-ssh-web-server.png" />
+SSH a la EC2 del web server.</p>
+</blockquote>
+<p>Ya adentro de la EC2:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Paso 1: Pedir el token (esto es lo que hace IMDSv2 más seguro)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nv">TOKEN</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span><span class="s2">&quot;http://169.254.169.254/latest/api/token&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token-ttl-seconds: 21600&quot;</span><span class="k">)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1"># Paso 2: Usar el token para consultar metadata</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://169.254.169.254/latest/meta-data/
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://169.254.169.254/latest/meta-data/instance-type
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://169.254.169.254/latest/meta-data/public-ipv4
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://169.254.169.254/latest/meta-data/security-groups
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="c1"># También podés ver el User Data que se ejecutó al arrancar</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>curl<span class="w"> </span>-s<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;X-aws-ec2-metadata-token: </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>http://169.254.169.254/latest/user-data
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">IMDSv2 y SSRF</p>
+<p>La forma de proteger la metadata de instancias contra SSRF es <strong>usar IMDSv2</strong> (require token). La IP del servicio de metadata es siempre <code>169.254.169.254</code>.</p>
+</div>
+<blockquote>
+<p><img alt="IMDSv2 metadata" src="../../../assets/aws-labs/lab-01/09-imdsv2-metadata.png" />
+Output de los comandos de metadata en la terminal SSH.</p>
+</blockquote>
+<h3 id="verificacion-parte-2">Verificación Parte 2<a class="headerlink" href="#verificacion-parte-2" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>http://&lt;IP&gt;</code> muestra la página D3LT4 en el browser</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> SSH a la instancia funciona</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> IMDSv2 responde correctamente con el token</li>
+</ul>
+<hr />
+<h2 id="parte-3-nat-instance-internet-para-la-subnet-privada">Parte 3 — NAT Instance: Internet para la Subnet Privada<a class="headerlink" href="#parte-3-nat-instance-internet-para-la-subnet-privada" title="Permanent link">&para;</a></h2>
+<h3 id="el-problema-que-resolvemos">El problema que resolvemos<a class="headerlink" href="#el-problema-que-resolvemos" title="Permanent link">&para;</a></h3>
+<p>La subnet privada no tiene ruta a internet. Eso es intencional — no queremos que nadie desde internet pueda llegar a esas instancias. Pero las instancias privadas sí necesitan salir a internet para cosas como:</p>
+<ul>
+<li>Descargar actualizaciones del SO (<code>yum update</code>)</li>
+<li>Descargar paquetes y dependencias</li>
+<li>Conectarse a APIs externas</li>
+</ul>
+<p><strong>La solución: NAT (Network Address Translation).</strong> Un NAT permite que las instancias privadas salgan a internet usando la IP pública de otro recurso, sin ser accesibles directamente desde internet. Es como usar un proxy: la instancia privada le dice al NAT "hacé este request por mí", el NAT lo hace con su IP pública, recibe la respuesta y se la devuelve a la instancia privada.</p>
+<h3 id="nat-gateway-vs-nat-instance-por-que-elegimos-instance">NAT Gateway vs NAT Instance: por qué elegimos Instance<a class="headerlink" href="#nat-gateway-vs-nat-instance-por-que-elegimos-instance" title="Permanent link">&para;</a></h3>
+<p>AWS te ofrece dos opciones:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>NAT Gateway (managed)</th>
+<th>NAT Instance (manual)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Costo</strong></td>
+<td>~USD 0.045/hora (~$32/mes) + data transfer</td>
+<td>Free Tier (es una EC2 t2.micro)</td>
+</tr>
+<tr>
+<td><strong>Mantenimiento</strong></td>
+<td>AWS lo administra</td>
+<td>Vos lo administrás</td>
+</tr>
+<tr>
+<td><strong>Alta disponibilidad</strong></td>
+<td>Redundante dentro de una AZ</td>
+<td>Single point of failure</td>
+</tr>
+<tr>
+<td><strong>Rendimiento</strong></td>
+<td>Hasta 100 Gbps</td>
+<td>Depende del instance type</td>
+</tr>
+<tr>
+<td><strong>Security Groups</strong></td>
+<td>No aplican (usa NACLs)</td>
+<td>Sí aplican</td>
+</tr>
+<tr>
+<td><strong>Puede ser bastion</strong></td>
+<td>No</td>
+<td>Sí</td>
+</tr>
+</tbody>
+</table>
+<p>Para producción usarías NAT Gateway. Para aprender, la NAT Instance es mejor porque:</p>
+<ol>
+<li>Es gratis (Free Tier)</li>
+<li>Aprendés iptables, IP forwarding y Source/Dest Check — conceptos fundamentales de networking</li>
+<li>Entendés cómo funciona NAT por dentro, no como una caja negra</li>
+</ol>
+<h3 id="31-security-group-para-la-nat-instance">3.1 Security Group para la NAT Instance<a class="headerlink" href="#31-security-group-para-la-nat-instance" title="Permanent link">&para;</a></h3>
+<p>Este Security Group permite:</p>
+<ul>
+<li><strong>Todo el tráfico desde las subnets privadas</strong> — porque la NAT tiene que poder recibir los paquetes que las instancias privadas quieren mandar a internet</li>
+<li><strong>SSH desde tu IP</strong> — para poder conectarte y configurar iptables</li>
+</ul>
+<div class="tabbed-set tabbed-alternate" data-tabs="9:2"><input checked="checked" id="__tabbed_9_1" name="__tabbed_9" type="radio" /><input id="__tabbed_9_2" name="__tabbed_9" type="radio" /><div class="tabbed-labels"><label for="__tabbed_9_1">Consola AWS</label><label for="__tabbed_9_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>EC2</strong> → <strong>Security Groups</strong> → <strong>Create security group</strong></li>
+<li>Name: <code>d3lt4-nat-sg</code></li>
+<li>Description: <code>NAT Instance - trafico de subnets privadas</code></li>
+<li>VPC: <code>d3lt4-vpc</code></li>
+<li>
+<p><strong>Inbound rules</strong> → <strong>Add rule</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Port</th>
+<th>Source</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All traffic</td>
+<td>All</td>
+<td><code>10.0.3.0/24</code></td>
+<td>Todo desde private-1a</td>
+</tr>
+<tr>
+<td>All traffic</td>
+<td>All</td>
+<td><code>10.0.4.0/24</code></td>
+<td>Todo desde private-1b</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>22</td>
+<td><strong>My IP</strong></td>
+<td>SSH para configurar</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Create security group</strong></p>
+</li>
+</ol>
+<blockquote>
+<p><img alt="SG NAT instance" src="../../../assets/aws-labs/lab-01/10-nat-sg.png" />
+Security Group de la NAT con las 3 reglas de inbound.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-security-group<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">  </span>--group-name<span class="w"> </span>d3lt4-nat-sg<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="w">  </span>--description<span class="w"> </span><span class="s2">&quot;NAT Instance - trafico de subnets privadas&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">  </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>aws<span class="w"> </span>ec2<span class="w"> </span>authorize-security-group-ingress<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="w">  </span>--group-id<span class="w"> </span><span class="nv">$NAT_SG</span><span class="w"> </span>--protocol<span class="w"> </span>-1<span class="w"> </span>--cidr<span class="w"> </span><span class="m">10</span>.0.3.0/24
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>aws<span class="w"> </span>ec2<span class="w"> </span>authorize-security-group-ingress<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="w">  </span>--group-id<span class="w"> </span><span class="nv">$NAT_SG</span><span class="w"> </span>--protocol<span class="w"> </span>-1<span class="w"> </span>--cidr<span class="w"> </span><span class="m">10</span>.0.4.0/24
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>aws<span class="w"> </span>ec2<span class="w"> </span>authorize-security-group-ingress<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="w">  </span>--group-id<span class="w"> </span><span class="nv">$NAT_SG</span><span class="w"> </span>--protocol<span class="w"> </span>tcp<span class="w"> </span>--port<span class="w"> </span><span class="m">22</span><span class="w"> </span>--cidr<span class="w"> </span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span>ifconfig.me<span class="k">)</span>/32
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="32-lanzar-la-nat-instance">3.2 Lanzar la NAT Instance<a class="headerlink" href="#32-lanzar-la-nat-instance" title="Permanent link">&para;</a></h3>
+<div class="tabbed-set tabbed-alternate" data-tabs="10:2"><input checked="checked" id="__tabbed_10_1" name="__tabbed_10" type="radio" /><input id="__tabbed_10_2" name="__tabbed_10" type="radio" /><div class="tabbed-labels"><label for="__tabbed_10_1">Consola AWS</label><label for="__tabbed_10_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li><strong>EC2</strong> → <strong>Instances</strong> → <strong>Launch instances</strong></li>
+<li>Name: <code>d3lt4-nat-instance</code></li>
+<li>AMI: <strong>Amazon Linux 2</strong> (Free tier)</li>
+<li>Instance type: <code>t2.micro</code></li>
+<li>Key pair: <code>d3lt4-key</code></li>
+<li>Network settings → Edit:<ul>
+<li>VPC: <code>d3lt4-vpc</code></li>
+<li>Subnet: <code>d3lt4-public-1a</code></li>
+<li>Auto-assign public IP: <strong>Enable</strong></li>
+<li>Select existing security group: <code>d3lt4-nat-sg</code></li>
+</ul>
+</li>
+<li><strong>Launch instance</strong></li>
+<li>Esperá a que esté en <strong>Running</strong></li>
+</ol>
+<blockquote>
+<p><img alt="NAT instance running" src="../../../assets/aws-labs/lab-01/11-nat-ec2-running.png" />
+Instancia <code>d3lt4-nat-instance</code> en Running.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>run-instances<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>--image-id<span class="w"> </span>ami-0c02fb55956c7d316<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>--instance-type<span class="w"> </span>t2.micro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>--subnet-id<span class="w"> </span><span class="nv">$PUB_SUBNET_A</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span>--security-group-ids<span class="w"> </span><span class="nv">$NAT_SG</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span>--key-name<span class="w"> </span><span class="nv">$KEY_PAIR</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=instance,Tags=[{Key=Name,Value=d3lt4-nat-instance}]&#39;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="33-deshabilitar-sourcedestination-check">3.3 Deshabilitar Source/Destination Check<a class="headerlink" href="#33-deshabilitar-sourcedestination-check" title="Permanent link">&para;</a></h3>
+<h4 id="que-es-y-por-que-hay-que-deshabilitarlo">¿Qué es y por qué hay que deshabilitarlo?<a class="headerlink" href="#que-es-y-por-que-hay-que-deshabilitarlo" title="Permanent link">&para;</a></h4>
+<p>Por defecto, AWS verifica que cada paquete que entra o sale de una ENI (la tarjeta de red virtual) tenga como origen o destino la IP de esa ENI. Si no coincide, AWS descarta el paquete. Esto es una medida de seguridad para evitar spoofing.</p>
+<p>Pero una NAT Instance necesita <strong>reenviar paquetes que no son suyos</strong>. Recibe un paquete con origen <code>10.0.3.10</code> (la instancia privada) y destino <code>142.250.80.46</code> (google.com) — ninguna de esas IPs es la de la NAT Instance. Si el Source/Dest Check está activo, AWS tira ese paquete a la basura.</p>
+<p><strong>Deshabilitarlo es obligatorio para cualquier instancia que haga de router, NAT o firewall.</strong></p>
+<div class="tabbed-set tabbed-alternate" data-tabs="11:2"><input checked="checked" id="__tabbed_11_1" name="__tabbed_11" type="radio" /><input id="__tabbed_11_2" name="__tabbed_11" type="radio" /><div class="tabbed-labels"><label for="__tabbed_11_1">Consola AWS</label><label for="__tabbed_11_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Seleccionar la instancia <code>d3lt4-nat-instance</code></li>
+<li><strong>Actions</strong> → <strong>Networking</strong> → <strong>Change source/destination check</strong></li>
+<li>Activar <strong>Stop</strong> (deshabilitar el check) → <strong>Save</strong></li>
+</ol>
+<blockquote>
+<p><img alt="Source/Dest check off" src="../../../assets/aws-labs/lab-01/12-source-dest-check.png" />
+Source/destination check deshabilitado.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>modify-instance-attribute<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="w">  </span>--instance-id<span class="w"> </span><span class="nv">$NAT_INSTANCE_ID</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">  </span>--no-source-dest-check
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="34-configurar-iptables-y-ip-forwarding">3.4 Configurar iptables y IP forwarding<a class="headerlink" href="#34-configurar-iptables-y-ip-forwarding" title="Permanent link">&para;</a></h3>
+<p>Ahora viene la parte de Linux. Necesitamos configurar dos cosas dentro de la NAT Instance:</p>
+<h4 id="que-es-iptables">¿Qué es iptables?<a class="headerlink" href="#que-es-iptables" title="Permanent link">&para;</a></h4>
+<p><strong>iptables</strong> es el firewall del kernel de Linux. Viene incluido en prácticamente todas las distribuciones y es la herramienta estándar para controlar el tráfico de red a nivel de sistema operativo. Funciona con <strong>tablas</strong> y <strong>cadenas</strong> (chains) de reglas que el kernel evalúa para cada paquete que pasa por la máquina.</p>
+<p>Las tablas principales son:</p>
+<ul>
+<li><strong><code>filter</code></strong> (la default): decide si un paquete se acepta, se rechaza o se descarta. Tiene las cadenas INPUT (tráfico que entra a la máquina), OUTPUT (tráfico que sale) y FORWARD (tráfico que pasa a través de la máquina hacia otro destino).</li>
+<li><strong><code>nat</code></strong>: modifica las direcciones IP de los paquetes. Tiene las cadenas PREROUTING (modifica el destino antes de enrutar), POSTROUTING (modifica el origen después de enrutar) y OUTPUT.</li>
+<li><strong><code>mangle</code></strong>: para modificaciones más avanzadas de paquetes (TTL, TOS, etc.). No la usamos acá.</li>
+</ul>
+<p>Cuando un paquete llega a la máquina, el kernel lo pasa por las cadenas correspondientes en orden. Cada regla tiene una condición y una acción (llamada "target"): si el paquete coincide con la condición, se ejecuta la acción (ACCEPT, DROP, MASQUERADE, etc.). Si no coincide, pasa a la siguiente regla.</p>
+<p>En nuestro caso usamos iptables para dos cosas: reglas de <strong>FORWARD</strong> (permitir que los paquetes de las subnets privadas pasen a través de la NAT Instance) y una regla de <strong>MASQUERADE</strong> en la tabla <code>nat</code> (reemplazar la IP privada de origen por la IP pública de la NAT).</p>
+<h4 id="lo-que-configuramos">Lo que configuramos<a class="headerlink" href="#lo-que-configuramos" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>IP Forwarding:</strong> Decirle al kernel de Linux "si te llega un paquete que no es para vos, reenvialo en vez de descartarlo". Por defecto Linux no hace esto — es una medida de seguridad para que una máquina común no actúe como router sin que vos lo decidas.</li>
+<li><strong>iptables MASQUERADE:</strong> Una regla de NAT que reemplaza la IP privada de origen por la IP pública de la NAT Instance. Sin esto, el paquete saldría a internet con IP <code>10.0.3.10</code> (privada) y nadie sabría adónde enviar la respuesta.</li>
+</ol>
+<p>Conectate por SSH a la NAT Instance:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>ssh<span class="w"> </span>-i<span class="w"> </span>d3lt4-key.pem<span class="w"> </span>ec2-user@&lt;IP_PUBLICA_NAT&gt;
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">La interfaz es <code>ens5</code>, no <code>eth0</code></p>
+<p>Las instancias EC2 actuales corren sobre la plataforma <strong>Nitro</strong> de AWS, que usa el driver <strong>ENA (Elastic Network Adapter)</strong>. Este driver registra la interfaz de red como <code>ens5</code> en vez del clásico <code>eth0</code>. Si usás <code>eth0</code> en las reglas de iptables, no van a matchear ningún paquete y el NAT no va a funcionar. Podés verificar el nombre de tu interfaz con <code>ip addr show</code>.</p>
+</div>
+<p>Dentro de la NAT Instance, ejecutá estos comandos:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># 1. Habilitar IP forwarding</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1">#    Le dice al kernel: &quot;si te llega un paquete que no es para vos, reenvialo&quot;</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>sudo<span class="w"> </span>sysctl<span class="w"> </span>-w<span class="w"> </span>net.ipv4.ip_forward<span class="o">=</span><span class="m">1</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;net.ipv4.ip_forward = 1&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/sysctl.d/nat.conf
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>sudo<span class="w"> </span>sysctl<span class="w"> </span>-p<span class="w"> </span>/etc/sysctl.d/nat.conf
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># 2. Reglas de MASQUERADE</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="c1">#    Reemplaza la IP origen (privada) por la IP de la NAT Instance (pública)</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="c1">#    Una regla por cada subnet privada — solo ellas necesitan salir por la NAT</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-A<span class="w"> </span>POSTROUTING<span class="w"> </span>-o<span class="w"> </span>ens5<span class="w"> </span>-s<span class="w"> </span><span class="m">10</span>.0.3.0/24<span class="w"> </span>-j<span class="w"> </span>MASQUERADE
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-A<span class="w"> </span>POSTROUTING<span class="w"> </span>-o<span class="w"> </span>ens5<span class="w"> </span>-s<span class="w"> </span><span class="m">10</span>.0.4.0/24<span class="w"> </span>-j<span class="w"> </span>MASQUERADE
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="c1"># 3. Permitir forwarding de conexiones establecidas</span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="c1">#    Deja pasar las respuestas de internet (paquetes de vuelta)</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>FORWARD<span class="w"> </span>-i<span class="w"> </span>ens5<span class="w"> </span>-o<span class="w"> </span>ens5<span class="w"> </span>-m<span class="w"> </span>state<span class="w"> </span>--state<span class="w"> </span>RELATED,ESTABLISHED<span class="w"> </span>-j<span class="w"> </span>ACCEPT
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a><span class="c1"># 4. Permitir forwarding desde subnets privadas</span>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="c1">#    Deja pasar los requests nuevos que vienen de las subnets privadas</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>FORWARD<span class="w"> </span>-i<span class="w"> </span>ens5<span class="w"> </span>-s<span class="w"> </span><span class="m">10</span>.0.3.0/24<span class="w"> </span>-j<span class="w"> </span>ACCEPT
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-A<span class="w"> </span>FORWARD<span class="w"> </span>-i<span class="w"> </span>ens5<span class="w"> </span>-s<span class="w"> </span><span class="m">10</span>.0.4.0/24<span class="w"> </span>-j<span class="w"> </span>ACCEPT
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>
+</span><span id="__span-15-22"><a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="c1"># 5. Hacer persistentes las reglas (si no, se pierden al reiniciar)</span>
+</span><span id="__span-15-23"><a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>iptables-services
+</span><span id="__span-15-24"><a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>sudo<span class="w"> </span>service<span class="w"> </span>iptables<span class="w"> </span>save
+</span><span id="__span-15-25"><a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>iptables
+</span><span id="__span-15-26"><a id="__codelineno-15-26" name="__codelineno-15-26" href="#__codelineno-15-26"></a>
+</span><span id="__span-15-27"><a id="__codelineno-15-27" name="__codelineno-15-27" href="#__codelineno-15-27"></a><span class="c1"># Verificar que todo esté configurado</span>
+</span><span id="__span-15-28"><a id="__codelineno-15-28" name="__codelineno-15-28" href="#__codelineno-15-28"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-t<span class="w"> </span>nat<span class="w"> </span>-L<span class="w"> </span>-n<span class="w"> </span>-v
+</span><span id="__span-15-29"><a id="__codelineno-15-29" name="__codelineno-15-29" href="#__codelineno-15-29"></a>sudo<span class="w"> </span>iptables<span class="w"> </span>-L<span class="w"> </span>FORWARD<span class="w"> </span>-n<span class="w"> </span>-v
+</span></code></pre></div>
+<blockquote>
+<p><img alt="iptables MASQUERADE" src="../../../assets/aws-labs/lab-01/13-iptables-masquerade.png" />
+Output de <code>iptables -t nat -L -n -v</code> mostrando la regla MASQUERADE.</p>
+</blockquote>
+<h3 id="como-funciona-el-nat-paquete-por-paquete">Cómo funciona el NAT — paquete por paquete<a class="headerlink" href="#como-funciona-el-nat-paquete-por-paquete" title="Permanent link">&para;</a></h3>
+<p>Para que entiendas exactamente qué pasa cuando una instancia privada hace <code>curl google.com</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>PAQUETE DE IDA:
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  Instancia privada (10.0.3.10) quiere acceder a google.com (142.250.80.46)
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  1. Paquete sale:        src=10.0.3.10    dst=142.250.80.46
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  2. Route Table privada: 0.0.0.0/0 → NAT Instance → paquete llega a la NAT
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  3. iptables MASQUERADE: src=10.0.3.10 → src=54.x.x.x (IP pública NAT)
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>  4. Sale por el IGW a internet
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>PAQUETE DE VUELTA:
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>  Google responde a 54.x.x.x (la IP pública de la NAT)
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>  5. Llega al IGW → NAT Instance
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>  6. conntrack recuerda: &quot;54.x.x.x:44832 era 10.0.3.10:44832&quot;
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>  7. Revierte:           dst=54.x.x.x → dst=10.0.3.10
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>  8. Paquete llega a la instancia privada
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>La instancia privada no sabe que hubo NAT — para ella, google le respondió directo.
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">conntrack</p>
+<p><code>conntrack</code> es el módulo del kernel de Linux que recuerda las conexiones activas. Es lo que permite que el MASQUERADE sepa a quién devolverle la respuesta. Sin conntrack, la NAT no sabría que el paquete de vuelta de google era para <code>10.0.3.10</code>.</p>
+</div>
+<h3 id="35-ruta-en-la-route-table-privada">3.5 Ruta en la Route Table privada<a class="headerlink" href="#35-ruta-en-la-route-table-privada" title="Permanent link">&para;</a></h3>
+<p>Ahora le decimos a la Route Table privada: "para llegar a internet (<code>0.0.0.0/0</code>), mandá el tráfico a la NAT Instance". Sin esta ruta, los paquetes de las instancias privadas no tienen adónde ir.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="12:2"><input checked="checked" id="__tabbed_12_1" name="__tabbed_12" type="radio" /><input id="__tabbed_12_2" name="__tabbed_12" type="radio" /><div class="tabbed-labels"><label for="__tabbed_12_1">Consola AWS</label><label for="__tabbed_12_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>VPC</strong> → <strong>Route Tables</strong> → seleccionar <code>d3lt4-private-rt</code></li>
+<li>Pestaña <strong>Routes</strong> → <strong>Edit routes</strong> → <strong>Add route</strong><ul>
+<li>Destination: <code>0.0.0.0/0</code></li>
+<li>Target: <strong>Instance</strong> → seleccionar <code>d3lt4-nat-instance</code></li>
+</ul>
+</li>
+<li><strong>Save changes</strong></li>
+</ol>
+<blockquote>
+<p><img alt="Route table privada - rutas" src="../../../assets/aws-labs/lab-01/private-rt-nateado.png" />
+Route table privada con la ruta <code>0.0.0.0/0 → NAT Instance</code>.</p>
+<p><img alt="Route table privada - associations" src="../../../assets/aws-labs/lab-01/14-private-rt.png" />
+Subnet associations: las dos subnets privadas asociadas.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-route<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span>--route-table-id<span class="w"> </span><span class="nv">$PRIVATE_RT</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span>--destination-cidr-block<span class="w"> </span><span class="m">0</span>.0.0.0/0<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">  </span>--instance-id<span class="w"> </span><span class="nv">$NAT_INSTANCE_ID</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="36-probar-con-una-instancia-privada">3.6 Probar con una instancia privada<a class="headerlink" href="#36-probar-con-una-instancia-privada" title="Permanent link">&para;</a></h3>
+<p>Ahora viene el momento de la verdad. Vamos a lanzar una EC2 en la subnet privada (sin IP pública) y verificar que puede salir a internet a través de la NAT Instance.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="13:2"><input checked="checked" id="__tabbed_13_1" name="__tabbed_13" type="radio" /><input id="__tabbed_13_2" name="__tabbed_13" type="radio" /><div class="tabbed-labels"><label for="__tabbed_13_1">Consola AWS</label><label for="__tabbed_13_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><strong>Crear Security Group para la instancia privada:</strong></p>
+<ol>
+<li><strong>EC2</strong> → <strong>Security Groups</strong> → <strong>Create security group</strong></li>
+<li>Name: <code>d3lt4-private-sg</code></li>
+<li>Description: <code>Instancia privada - SSH desde subnets publicas</code></li>
+<li>VPC: <code>d3lt4-vpc</code></li>
+<li>
+<p>Inbound rules:</p>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Port</th>
+<th>Source</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSH</td>
+<td>22</td>
+<td><code>10.0.1.0/24</code></td>
+<td>SSH desde public-1a (NAT/bastion)</td>
+</tr>
+<tr>
+<td>SSH</td>
+<td>22</td>
+<td><code>10.0.2.0/24</code></td>
+<td>SSH desde public-1b</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><strong>Create security group</strong></p>
+</li>
+</ol>
+<blockquote>
+<p><img alt="SG instancia privada" src="../../../assets/aws-labs/lab-01/private-sg.png" />
+Security Group de la instancia privada — SSH solo desde las subnets públicas.</p>
+</blockquote>
+<p><strong>Lanzar instancia de test:</strong></p>
+<ol>
+<li><strong>EC2</strong> → <strong>Launch instances</strong></li>
+<li>Name: <code>d3lt4-private-test</code></li>
+<li>AMI: <strong>Amazon Linux 2</strong></li>
+<li>Instance type: <code>t2.micro</code></li>
+<li>Key pair: <code>d3lt4-key</code></li>
+<li>Network settings → Edit:<ul>
+<li>VPC: <code>d3lt4-vpc</code></li>
+<li>Subnet: <code>d3lt4-private-1a</code></li>
+<li>Auto-assign public IP: <strong>Disable</strong> (es privada, no queremos IP pública)</li>
+<li>Select existing security group: <code>d3lt4-private-sg</code></li>
+</ul>
+</li>
+<li><strong>Launch instance</strong></li>
+</ol>
+<blockquote>
+<p><img alt="Instancia privada running" src="../../../assets/aws-labs/lab-01/15-private-ec2-running.png" />
+Instancia <code>d3lt4-private-test</code> en Running, sin IP pública, con Private IP <code>10.0.3.x</code>.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>create-security-group<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="w">  </span>--group-name<span class="w"> </span>d3lt4-private-sg<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="w">  </span>--description<span class="w"> </span><span class="s2">&quot;Instancia privada - SSH desde subnets publicas&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="w">  </span>--vpc-id<span class="w"> </span><span class="nv">$VPC_ID</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>aws<span class="w"> </span>ec2<span class="w"> </span>authorize-security-group-ingress<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a><span class="w">  </span>--group-id<span class="w"> </span><span class="nv">$PRIV_SG</span><span class="w"> </span>--protocol<span class="w"> </span>tcp<span class="w"> </span>--port<span class="w"> </span><span class="m">22</span><span class="w"> </span>--cidr<span class="w"> </span><span class="m">10</span>.0.1.0/24
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>aws<span class="w"> </span>ec2<span class="w"> </span>authorize-security-group-ingress<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a><span class="w">  </span>--group-id<span class="w"> </span><span class="nv">$PRIV_SG</span><span class="w"> </span>--protocol<span class="w"> </span>tcp<span class="w"> </span>--port<span class="w"> </span><span class="m">22</span><span class="w"> </span>--cidr<span class="w"> </span><span class="m">10</span>.0.2.0/24
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>
+</span><span id="__span-18-11"><a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>aws<span class="w"> </span>ec2<span class="w"> </span>run-instances<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-12"><a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a><span class="w">  </span>--image-id<span class="w"> </span>ami-0c02fb55956c7d316<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-13"><a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a><span class="w">  </span>--instance-type<span class="w"> </span>t2.micro<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-14"><a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a><span class="w">  </span>--subnet-id<span class="w"> </span><span class="nv">$PRIV_SUBNET_A</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-15"><a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a><span class="w">  </span>--security-group-ids<span class="w"> </span><span class="nv">$PRIV_SG</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-16"><a id="__codelineno-18-16" name="__codelineno-18-16" href="#__codelineno-18-16"></a><span class="w">  </span>--key-name<span class="w"> </span><span class="nv">$KEY_PAIR</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-18-17"><a id="__codelineno-18-17" name="__codelineno-18-17" href="#__codelineno-18-17"></a><span class="w">  </span>--tag-specifications<span class="w"> </span><span class="s1">&#39;ResourceType=instance,Tags=[{Key=Name,Value=d3lt4-private-test}]&#39;</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="probar-conectividad">Probar conectividad<a class="headerlink" href="#probar-conectividad" title="Permanent link">&para;</a></h3>
+<p>La instancia privada no tiene IP pública, así que no podés conectarte directo. Usamos <strong>SSH con ProxyCommand</strong> — le decimos a SSH "conectate primero a la NAT Instance y desde ahí saltá a la privada":</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>ssh<span class="w"> </span>-o<span class="w"> </span><span class="nv">ProxyCommand</span><span class="o">=</span><span class="s2">&quot;ssh -i d3lt4-key.pem -W %h:%p ec2-user@&lt;IP_PUBLICA_NAT&gt;&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="w">    </span>-i<span class="w"> </span>d3lt4-key.pem<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span>ec2-user@&lt;IP_PRIVADA&gt;
+</span></code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Qué hace ProxyCommand</p>
+<p><code>-o ProxyCommand</code> le dice a SSH: "no te conectes directo al destino, primero establecé un túnel a través de este host intermedio". El flag <code>-W %h:%p</code> le indica al host intermedio que reenvíe la conexión al host y puerto de destino. La NAT Instance actúa como <strong>bastion host</strong> — un punto de entrada seguro a la red privada.</p>
+<p>Existe también el flag <code>-J</code> que es un shorthand más corto (<code>ssh -J ec2-user@&lt;NAT&gt; ec2-user@&lt;PRIVADA&gt;</code>), pero en la práctica puede no funcionar en todas las configuraciones. <code>ProxyCommand</code> es más explícito y confiable.</p>
+</div>
+<blockquote>
+<p><img alt="SSH a la instancia privada" src="../../../assets/aws-labs/lab-01/ssh-chain.png" />
+SSH a la instancia privada pasando por la NAT como bastion.</p>
+</blockquote>
+<p>Dentro de la instancia privada:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Probar que llega a internet</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>ping<span class="w"> </span>-c<span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">8</span>.8.8.8
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Probar que resuelve DNS y baja contenido</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>curl<span class="w"> </span>-s<span class="w"> </span>https://google.com
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="c1"># Esta es la prueba definitiva: debería mostrar la IP pública de la NAT Instance</span>
+</span><span id="__span-20-8"><a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a><span class="c1"># (no la de la instancia privada, porque no tiene)</span>
+</span><span id="__span-20-9"><a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>curl<span class="w"> </span>-s<span class="w"> </span>ifconfig.me
+</span><span id="__span-20-10"><a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>
+</span><span id="__span-20-11"><a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a><span class="c1"># Probar que puede descargar paquetes</span>
+</span><span id="__span-20-12"><a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>sudo<span class="w"> </span>yum<span class="w"> </span>check-update
+</span></code></pre></div>
+<blockquote>
+<p><img alt="NAT funcionando — ping y curl" src="../../../assets/aws-labs/lab-01/ping-desde-privada.png" />
+Ping a <code>8.8.8.8</code> y <code>curl ifconfig.me</code> desde la instancia privada — muestra la IP pública de la NAT Instance, la prueba de que el NAT funciona.</p>
+</blockquote>
+<h3 id="bonus-monitorear-el-nat-en-vivo">Bonus: Monitorear el NAT en vivo<a class="headerlink" href="#bonus-monitorear-el-nat-en-vivo" title="Permanent link">&para;</a></h3>
+<p>Si querés ver el NAT en acción, abrí otra terminal, conectate a la NAT Instance y mirá el tráfico:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># En la NAT Instance:</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>conntrack-tools
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># Ver conexiones NAT activas (muestra la traducción de IPs)</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>sudo<span class="w"> </span>conntrack<span class="w"> </span>-L
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="c1"># Ver paquetes en tiempo real</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>sudo<span class="w"> </span>tcpdump<span class="w"> </span>-i<span class="w"> </span>ens5<span class="w"> </span>-n<span class="w"> </span>host<span class="w"> </span>&lt;IP_PRIVADA_INSTANCIA&gt;
+</span></code></pre></div>
+<blockquote>
+<p><img alt="Conntrack NAT" src="../../../assets/aws-labs/lab-01/conn-track-nat-instance.png" />
+Conexiones NAT activas mostrando la traducción de IPs.</p>
+</blockquote>
+<h3 id="verificacion-parte-3">Verificación Parte 3<a class="headerlink" href="#verificacion-parte-3" title="Permanent link">&para;</a></h3>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Instancia privada puede hacer <code>ping 8.8.8.8</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>curl ifconfig.me</code> desde la privada muestra la IP pública de la NAT (no la de la privada)</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <code>iptables -t nat -L -n -v</code> muestra paquetes contados en MASQUERADE</li>
+</ul>
+<hr />
+<h2 id="limpieza">Limpieza<a class="headerlink" href="#limpieza" title="Permanent link">&para;</a></h2>
+<p>La instancia privada de test ya no la necesitamos — solo la usamos para verificar que el NAT funciona.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="14:2"><input checked="checked" id="__tabbed_14_1" name="__tabbed_14" type="radio" /><input id="__tabbed_14_2" name="__tabbed_14" type="radio" /><div class="tabbed-labels"><label for="__tabbed_14_1">Consola AWS</label><label for="__tabbed_14_2">CLI</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ol>
+<li>Ir a <strong>EC2</strong> → <strong>Instances</strong></li>
+<li>Seleccionar <code>d3lt4-private-test</code></li>
+<li><strong>Instance state</strong> → <strong>Terminate instance</strong> → Confirmar</li>
+</ol>
+</div>
+<div class="tabbed-block">
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>aws<span class="w"> </span>ec2<span class="w"> </span>terminate-instances<span class="w"> </span>--instance-ids<span class="w"> </span>&lt;PRIVATE_TEST_INSTANCE_ID&gt;
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Lo que dejamos corriendo (Free Tier)</p>
+<ul>
+<li><strong>VPC, subnets, IGW, Route Tables</strong> → siempre gratis, no cobra nada</li>
+<li><strong>EC2 web server (t2.micro)</strong> → Free Tier, la usamos en el próximo lab</li>
+<li><strong>NAT Instance (t2.micro)</strong> → Free Tier, pero ojo: son 750 horas/mes <strong>entre todas</strong> las t2.micro. Si corrés 2 instancias 24/7 = 1,440 horas → te pasás del Free Tier. Pará la NAT cuando no practiques:</li>
+</ul>
+<p><strong>Consola:</strong> EC2 → seleccionar <code>d3lt4-nat-instance</code> → Instance state → Stop instance</p>
+<p><strong>CLI:</strong> <code>aws ec2 stop-instances --instance-ids $NAT_INSTANCE_ID</code></p>
+</div>
+<hr />
+<h2 id="resumen-de-conceptos-clave">Resumen de conceptos clave<a class="headerlink" href="#resumen-de-conceptos-clave" title="Permanent link">&para;</a></h2>
+<p>Lo que cubrimos en este lab:</p>
+<table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VPC</td>
+<td>Vive en una <strong>región</strong>. Una subnet vive en una <strong>AZ</strong>.</td>
+</tr>
+<tr>
+<td>Subnet pública vs privada</td>
+<td>La diferencia es solo la Route Table: pública tiene ruta <code>0.0.0.0/0 → IGW</code>.</td>
+</tr>
+<tr>
+<td>CIDR</td>
+<td><code>/16</code> = 65,536 IPs. <code>/24</code> = 256 IPs (251 usables, AWS reserva 5).</td>
+</tr>
+<tr>
+<td>DNS hostnames</td>
+<td>Necesario para que EC2 tengan DNS público.</td>
+</tr>
+<tr>
+<td>User Data</td>
+<td>Script que se ejecuta como root en el <strong>primer boot</strong> de la instancia.</td>
+</tr>
+<tr>
+<td>IMDSv2</td>
+<td>Metadata Service v2, protege contra SSRF con un token. IP: <code>169.254.169.254</code>.</td>
+</tr>
+<tr>
+<td>Familias EC2</td>
+<td>T (burstable), M (general), C (compute), R (memory), I/D (storage).</td>
+</tr>
+<tr>
+<td>Source/Dest Check OFF</td>
+<td><strong>Obligatorio</strong> para cualquier instancia que haga de router, NAT o firewall.</td>
+</tr>
+<tr>
+<td>NAT Instance vs NAT Gateway</td>
+<td>Instance = manual y barato. Gateway = managed, caro, más rendimiento.</td>
+</tr>
+<tr>
+<td>NAT Instance como bastion</td>
+<td>Puede serlo (Gateway no puede).</td>
+</tr>
+<tr>
+<td>Security Groups en NAT</td>
+<td>Aplican a NAT Instance, <strong>no</strong> a NAT Gateway (que usa NACLs).</td>
+</tr>
+<tr>
+<td>iptables</td>
+<td>Firewall del kernel de Linux. Usa tablas (filter, nat) y cadenas de reglas para controlar el tráfico.</td>
+</tr>
+<tr>
+<td>MASQUERADE</td>
+<td>Regla de iptables (tabla nat) que reemplaza la IP origen por la de la interfaz de salida.</td>
+</tr>
+<tr>
+<td>conntrack</td>
+<td>Módulo del kernel que trackea conexiones para saber a quién devolver las respuestas del NAT.</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+
+
+
+  <form class="md-feedback" name="feedback" hidden>
+    <fieldset>
+      <legend class="md-feedback__title">
+        Was this page helpful?
+      </legend>
+      <div class="md-feedback__inner">
+        <div class="md-feedback__list">
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page was helpful" data-md-value="1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m7 0c0 .8-.7 1.5-1.5 1.5S14 10.3 14 9.5 14.7 8 15.5 8s1.5.7 1.5 1.5m-5 7.73c-1.75 0-3.29-.73-4.19-1.81L9.23 14c.45.72 1.52 1.23 2.77 1.23s2.32-.51 2.77-1.23l1.42 1.42c-.9 1.08-2.44 1.81-4.19 1.81"/></svg>
+            </button>
+          
+            <button class="md-feedback__icon md-icon" type="submit" title="This page could be improved" data-md-value="0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 12a8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8 8 8 0 0 0 8-8m2 0a10 10 0 0 1-10 10A10 10 0 0 1 2 12 10 10 0 0 1 12 2a10 10 0 0 1 10 10m-6.5-4c.8 0 1.5.7 1.5 1.5s-.7 1.5-1.5 1.5-1.5-.7-1.5-1.5.7-1.5 1.5-1.5M10 9.5c0 .8-.7 1.5-1.5 1.5S7 10.3 7 9.5 7.7 8 8.5 8s1.5.7 1.5 1.5m2 4.5c1.75 0 3.29.72 4.19 1.81l-1.42 1.42C14.32 16.5 13.25 16 12 16s-2.32.5-2.77 1.23l-1.42-1.42C8.71 14.72 10.25 14 12 14"/></svg>
+            </button>
+          
+        </div>
+        <div class="md-feedback__note">
+          
+            <div data-md-value="1" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback!
+            </div>
+          
+            <div data-md-value="0" hidden>
+              
+              
+                
+              
+              
+              
+                
+                
+              
+              Thanks for your feedback! Help us improve this page by using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+            </div>
+          
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2026 <a href="https://github.com/Delta-39" target="_blank" rel="noopener">D3LT4</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/Delta-39" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/in/juan-martin-terribile-giles-90a4b1229/" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.instant", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy", "content.code.lines", "content.figures", "header.autohide"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

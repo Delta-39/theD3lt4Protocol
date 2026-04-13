@@ -2,150 +2,158 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/about/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/ai-security/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/ai-security/ai-seguridad-infra-2026/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/ai-security/lab-jailbreak-agente/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/ai-security/lab-supply-chain-modelos/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/blog/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cloud-devops/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://delta-39.github.io/theD3lt4Protocol/cloud-devops/aws-labs/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://delta-39.github.io/theD3lt4Protocol/cloud-devops/aws-labs/lab-01-vpc-ec2-nat/</loc>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/endpoint-forensics/insider/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/endpoint-forensics/ramnit-lab/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/endpoint-forensics/redline-stealer-lab/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/endpoint-forensics/reveal-lab/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/network-forensics/packet-maze/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/network-forensics/poisoned-credentials-lab/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/network-forensics/tomcat-lab/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/network-forensics/webstrike-lab/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/cyberdefenders/threat-intel/iceId-lab/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/dockerlabs/facil/aguademayo/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/dockerlabs/facil/amor/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/dockerlabs/facil/anonymousPingu/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/dockerlabs/facil/peque%C3%B1as_mentirosas/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/dockerlabs/facil/psycho/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/dockerlabs/muyFacil/firsthacking/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/maquinas-vulnerables/dockerlabs/muyFacil/injection/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/recursos/enlaces-utiles/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/Docker/instalacion-portainer/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/Docker/primeros-pasos-docker/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/active-directory/creacion-dominio/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/active-directory/creacion-gpo/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/analisis-malware/laboratorio-malware/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/herramientas-hacking/nmap/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/herramientas-hacking/wireshark/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/pfSense/configurar-openVpn-segura/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
     <url>
          <loc>https://delta-39.github.io/theD3lt4Protocol/tutoriales/pfSense/primeros-pasos-pfsense/</loc>
-         <lastmod>2026-04-06</lastmod>
+         <lastmod>2026-04-13</lastmod>
     </url>
 </urlset>
